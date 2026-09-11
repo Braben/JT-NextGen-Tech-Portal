@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion, useScroll, useSpring } from 'framer-motion';
 import { programAPI, blogAPI, eventAPI } from '../../api';
 import { ArrowRight, Sparkles, Check, ShieldCheck, Clock, Award, Users, BookOpen, Target, Lightbulb, Eye, GraduationCap, Play, Quote, ChevronLeft, ChevronRight, Calendar, MapPin, Search, Star, Zap, Layers, ChevronDown } from 'lucide-react';
 import api from '../../api';
@@ -36,8 +36,6 @@ const stats = [
   { k: '4.9/5', v: 'Avg rating', sub: '3k+ reviews' },
   { k: '12k+', v: 'Alumni', sub: 'Building globally' },
 ];
-
-const heroLabImage = 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1200&q=80';
 
 export default function Home() {
   const [programs, setPrograms] = useState([]);
@@ -85,138 +83,32 @@ export default function Home() {
 }
 
 function Hero() {
-  const reduce = useReducedMotion();
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const yBlob = useTransform(scrollYProgress, [0, 1], [0, 80]);
-  const opacityHero = useTransform(scrollYProgress, [0, 0.8], [1, 0.92]);
   return (
-    <motion.section ref={ref} style={{ opacity: opacityHero }} className="relative overflow-hidden bg-[#070F1F] text-white">
-      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute inset-0 bg-[#070F1F]" />
-        <div className="absolute inset-0 opacity-[0.035]" style={{ backgroundImage: `linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)`, backgroundSize: '48px 48px' }} />
-        {!reduce && (
-          <>
-            <motion.div style={{ y: yBlob }} animate={{ x: [0,28,0], y: [0,-18,0] }} transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }} className="absolute -top-40 -left-32 w-[640px] h-[640px] bg-brand-600/25 rounded-full blur-[110px]" />
-            <motion.div style={{ y: useTransform(scrollYProgress, [0,1], [0, -60]) }} animate={{ x: [0,-24,0], y: [0,16,0] }} transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }} className="absolute top-[18%] -right-40 w-[680px] h-[680px] bg-emerald-500/14 rounded-full blur-[120px]" />
-          </>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#070F1F]/60" />
-      </div>
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-10 sm:pt-14 sm:pb-14 lg:pt-16 lg:pb-16">
-        <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-8 items-center">
-          <div>
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur text-xs text-white/85">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Welcome to JT NextGen Tech Hub
-              <span className="hidden sm:inline-flex items-center gap-1 text-white/60">Enrollment open <ArrowRight className="w-3 h-3" /></span>
-            </motion.div>
-
-            <motion.h1 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08, duration: 0.6, ease: [0.22,1,0.36,1] }} className="mt-6 text-[30px] leading-[0.95] sm:text-[44px] lg:text-[52px] font-extrabold tracking-[-0.03em] text-balance">
-              JT NextGen Tech Hub
-              <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.7 }} className="block bg-gradient-to-r from-brand-400 via-emerald-300 to-brand-500 bg-clip-text text-transparent">practical digital skills</motion.span>
-              training.
-            </motion.h1>
-            <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16, duration: 0.6 }} className="mt-4 text-[15px] leading-6 text-white/60 max-w-[560px] text-pretty">
-              3-month, project-based training in Kpongunor — morning & evening sessions, mentorship, and a verified certificate to get you hired. <span className="text-white/85 font-medium">Empowering Minds, Transforming Futures.</span>
-            </motion.p>
-
-            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24, duration: 0.6 }} className="mt-7 flex flex-wrap gap-3">
-              <motion.div whileHover={{ y: -2, scale: 1.01 }} whileTap={{ scale: 0.98 }}>
-                <Link to="/register" className="inline-flex cursor-pointer items-center justify-center gap-2 bg-white text-navy-900 px-6 py-3 rounded-xl font-semibold text-sm hover:bg-gray-100 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2 focus-visible:outline-offset-[#070F1F]">Register Now <motion.span animate={{ x: [0,3,0] }} transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}><ArrowRight className="w-4 h-4" /></motion.span></Link>
-              </motion.div>
-              <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
-                <Link to="/programs" className="inline-flex cursor-pointer items-center justify-center gap-2 bg-white/10 border border-white/15 text-white px-6 py-3 rounded-xl font-semibold text-sm backdrop-blur hover:bg-white/15 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">View Programs <BookOpen className="w-4 h-4" /></Link>
-              </motion.div>
-              <Link to="/verify-certificate" className="hidden sm:inline-flex cursor-pointer items-center gap-2 text-xs text-white/60 hover:text-white/85 underline-offset-4 hover:underline px-2 py-3"><ShieldCheck className="w-4 h-4" /> Verify certificate</Link>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.36 }} className="mt-8 flex flex-wrap items-center gap-4 text-xs">
-              <div className="flex items-center gap-2">
-                <div className="flex -space-x-2">
-                  {['A','B','C','D'].map((c,i)=><motion.div key={i} initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.5 + i * 0.07, type: 'spring', stiffness: 300 }} className="w-7 h-7 rounded-full bg-navy-800 border-2 border-[#070F1F] flex items-center justify-center text-[10px] font-bold text-white/70">{c}</motion.div>)}
-                </div>
-                <div className="leading-none">
-                  <div className="flex items-center gap-1 text-white font-semibold"><Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" /> 4.9/5</div>
-                  <div className="text-white/50">3k+ learner reviews</div>
-                </div>
-              </div>
-              <span className="hidden sm:block h-6 w-px bg-white/10" />
-              <div className="flex items-center gap-2 text-white/60"><Award className="w-4 h-4 text-brand-400" /> Certificate of Competency included</div>
-            </motion.div>
-          </div>
-
-          <motion.div initial={{ opacity: 0, y: 18, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: 0.18, duration: 0.6, ease: [0.22,1,0.36,1] }} whileHover={{ y: -4, rotate: 0.3 }} className="relative lg:pl-6">
-            <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }} className="relative rounded-[24px] overflow-hidden border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_20px_80px_rgba(0,0,0,0.45)]">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none" />
-              <div className="relative h-52 sm:h-64 overflow-hidden">
-                <img src={heroLabImage} alt="Learners collaborating in a technology training session" className="h-full w-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#070F1F] via-[#070F1F]/20 to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4 flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Innovation Lab</p>
-                    <p className="text-lg font-extrabold text-white">Build real projects with mentors</p>
-                  </div>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-navy-900">
-                    <ShieldCheck className="h-3.5 w-3.5 text-brand-600" />
-                    Verified
-                  </span>
-                </div>
-              </div>
-              <div className="relative p-4 sm:p-5">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2 text-xs text-white/70"><span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Live cohort intake</div>
-                  <span className="hidden sm:inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-white text-navy-900 font-semibold"><Zap className="w-3 h-3 text-brand-600" /> Project-based</span>
-                </div>
-
-                <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mt-4 grid grid-cols-3 gap-3">
-                  {[
-                    { title: 'Web Development', icon: Layers, meta: '3 months • Beginner', color: 'from-brand-500 to-emerald-500' },
-                    { title: 'Graphic Design', icon: Sparkles, meta: '3 months • Beginner', color: 'from-fuchsia-500 to-violet-500' },
-                    { title: 'Digital Marketing', icon: Target, meta: '3 months • Intermediate', color: 'from-sky-500 to-indigo-500' },
-                  ].map((c,i) => (
-                    <motion.div key={c.title} custom={i} variants={fadeUp} whileHover={{ y: -3, scale: 1.02 }} transition={{ type: 'spring', stiffness: 400 }} className="rounded-2xl bg-white text-navy-900 p-3.5 border border-black/5 shadow-sm cursor-pointer">
-                      <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${c.color} flex items-center justify-center text-white`}><c.icon className="w-4 h-4" /></div>
-                      <div className="text-xs font-bold leading-tight mt-2.5">{c.title}</div>
-                      <div className="text-[11px] text-gray-500 mt-0.5">{c.meta}</div>
-                    </motion.div>
-                  ))}
-                </motion.div>
-
-                <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4 }} className="mt-4 rounded-2xl bg-white p-3.5 flex items-center gap-3 border border-black/5">
-                  <img src="https://i.pravatar.cc/100?img=12" alt="" className="w-10 h-10 rounded-full object-cover" />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold text-navy-900 leading-none">Ama Serwaa — Brand Studio</div>
-                    <div className="text-xs text-gray-500 mt-1 truncate">“I now deliver paid branding work for clients.”</div>
-                  </div>
-                  <div className="hidden sm:flex items-center gap-0.5 text-amber-500">{[1,2,3,4,5].map(i=><Star key={i} className="w-3.5 h-3.5 fill-amber-500" />)}</div>
-                </motion.div>
-
-                <div className="mt-3 grid grid-cols-3 gap-3">
-                  {stats.slice(0,3).map((s,i)=>(
-                    <motion.div key={s.k} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.5 + i*0.07 }} className="rounded-2xl bg-white/10 border border-white/10 backdrop-blur p-3 text-center">
-                      <div className="text-sm font-extrabold text-white">{s.k}</div>
-                      <div className="text-[11px] text-white/70">{s.v}</div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="px-4 sm:px-5 pb-4">
-                <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }} className="rounded-xl bg-[#0B1220] border border-white/10 p-3 flex items-center gap-3 cursor-pointer">
-                  <motion.div whileHover={{ scale: 1.1, rotate: 5 }} className="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white"><Play className="w-4 h-4 fill-white" /></motion.div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs font-semibold text-white">Watch 60-sec overview</div>
-                    <div className="text-[11px] text-white/50">How the 3-month journey works</div>
-                  </div>
-                  <span className="text-xs text-white/60 hidden sm:inline">01:02</span>
-                </motion.div>
-              </div>
-            </motion.div>
-          </motion.div>
+    <section aria-labelledby="hero-title" className="relative isolate flex min-h-[min(640px,calc(100svh-120px))] items-center overflow-hidden bg-teal-950 text-white">
+      <img src="https://jtnextgen.netlify.app/bg.jpg" alt="" fetchPriority="high"
+        className="absolute inset-0 -z-20 h-full w-full object-cover" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-black/55" />
+      <div className="mx-auto w-full max-w-4xl px-5 py-12 text-center sm:px-8">
+        <p className="mb-5 text-sm font-semibold text-teal-100">Practical skills. Community. Opportunity.</p>
+        <h1 id="hero-title" className="text-4xl font-extrabold leading-tight tracking-normal sm:text-5xl lg:text-6xl">
+          J.T NextGen Tech Hub
+        </h1>
+        <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-white sm:text-lg">
+          Empowering youth with practical digital skills for the modern world.
+        </p>
+        <p className="mt-3 text-lg font-semibold leading-7 text-white sm:text-xl">
+          Empowering Minds, Transforming Futures.
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <Link to="/register" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-teal-700 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-teal-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+            Register Now <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+          <Link to="/programs" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md border border-white bg-white px-6 py-3 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+            View Programs <BookOpen className="h-4 w-4" aria-hidden="true" />
+          </Link>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
 

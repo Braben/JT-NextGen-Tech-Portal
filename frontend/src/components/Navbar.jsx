@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import NotificationBell from './NotificationBell';
 import BrandLogo from './BrandLogo';
+import { Menu, X } from 'lucide-react';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -78,9 +79,12 @@ export default function Navbar() {
                 <Link to="/login" className="ml-3 btn-primary text-sm px-4 py-1.5">Sign In</Link>
                 <Link to="/register" className="btn-secondary text-sm px-4 py-1.5">Register</Link>
               </div>
-              <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden p-2 text-gray-600 hover:text-brand-700">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={mobileOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'} /></svg>
-              </button>
+              <div className="flex shrink-0 items-center gap-1 md:hidden">
+                <Link to="/register" className="inline-flex min-h-11 items-center rounded-md bg-teal-700 px-3 text-sm font-semibold text-white hover:bg-teal-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">Register</Link>
+                <button type="button" onClick={() => setMobileOpen(!mobileOpen)} aria-label={mobileOpen ? 'Close menu' : 'Open menu'} aria-expanded={mobileOpen} className="flex h-11 w-11 items-center justify-center text-gray-600 hover:text-brand-700">
+                  {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                </button>
+              </div>
             </>
           )}
 
