@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { validateApiResponse } from './responseValidation';
 
 // API base URL.
 // Default '/api' — same-origin (backend serves the built frontend in production,
@@ -16,7 +17,7 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  (res) => res,
+  validateApiResponse,
   (err) => {
     const authFormPath = ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password'];
     const isAuthFormRequest = authFormPath.some((path) => err.config?.url?.startsWith(path));

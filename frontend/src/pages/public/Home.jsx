@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useReducedMotion, useScroll, useSpring, useTra
 import { programAPI, blogAPI, eventAPI } from '../../api';
 import { ArrowRight, Sparkles, Check, ShieldCheck, Clock, Award, Users, BookOpen, Target, Lightbulb, Eye, GraduationCap, Play, Quote, ChevronLeft, ChevronRight, Calendar, MapPin, Search, Star, Zap, Layers, ChevronDown } from 'lucide-react';
 import api from '../../api';
+import { requireList } from '../../api/responseValidation';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -42,16 +43,18 @@ export default function Home() {
   const [programs, setPrograms] = useState([]);
   const [blogs, setBlogs] = useState([]);
   const [events, setEvents] = useState([]);
+  const [contentError, setContentError] = useState(false);
   const [testimonials, setTestimonials] = useState(fallbackTestimonials);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
 
   useEffect(() => {
-    programAPI.getAll().then((r) => setPrograms((r.data || []).slice(0, 6))).catch(() => {});
-    blogAPI.getAll().then((r) => setBlogs((r.data || []).slice(0, 3))).catch(() => {});
-    eventAPI.getPublic().then((r) => setEvents(r.data || [])).catch(() => {});
+    const onError = () => setContentError(true);
+    programAPI.getAll().then((r) => setPrograms(requireList(r.data).slice(0, 6))).catch(onError);
+    blogAPI.getAll().then((r) => setBlogs(requireList(r.data).slice(0, 3))).catch(onError);
+    eventAPI.getPublic().then((r) => setEvents(requireList(r.data))).catch(onError);
     api.get('/testimonials').then((r) => {
-      const rows = r.data || [];
+      const rows = requireList(r.data);
       if (rows.length) {
         setTestimonials(rows.map(t => ({
           name: t.name,
@@ -68,6 +71,7 @@ export default function Home() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap'); h1,h2,h3{font-family:'Plus Jakarta Sans',Inter,sans-serif} body{font-family:Inter,sans-serif}`}</style>
       <motion.div style={{ scaleX }} className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-brand-600 via-emerald-400 to-brand-600 origin-left z-[60] pointer-events-none" />
       <Hero />
+      {contentError && <div role="alert" className="mx-auto max-w-7xl px-6 py-4 text-center text-red-700">Some content could not be loaded. Please try again later.</div>}
       <TrustBar />
       <ProgramsSection programs={programs} />
       <ValueSection />

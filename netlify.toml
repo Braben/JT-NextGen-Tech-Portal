@@ -1,0 +1,9 @@
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = "dist"
+
+# Public service addresses only. Database credentials and JWT secrets stay on Render.
+[build.environment]
+  VITE_API_URL = "https://jt-nextgen-tech-portal.onrender.com/api"
+  VITE_SOCKET_URL = "https://jt-nextgen-tech-portal.onrender.com"
