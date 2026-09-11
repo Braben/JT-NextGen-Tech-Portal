@@ -254,8 +254,7 @@ export default function Register() {
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-6 sm:px-6 lg:px-8">
         <Link to="/home" className="inline-flex w-fit items-center gap-3 text-white">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-500 font-black shadow-lg shadow-brand-500/20">JT</span>
-          <span className="font-semibold tracking-tight">JT NextGen <span className="font-normal text-white/50">Tech Hub</span></span>
+          <BrandLogo className="w-56" />
         </Link>
 
         <div className="grid flex-1 items-center gap-8 py-8 lg:grid-cols-[0.86fr_1.14fr]">
@@ -599,3 +598,4 @@ function ChoiceGroup({ label, value, error, options, onChange }) {
     </fieldset>
   );
 }
+import BrandLogo from '../../components/BrandLogo';

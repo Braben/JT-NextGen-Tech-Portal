@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import NotificationBell from './NotificationBell';
+import BrandLogo from './BrandLogo';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -65,13 +66,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4" ref={menuRef}>
         <div className="flex items-center justify-between h-16">
           <Link to="/home" className="flex items-center gap-2 flex-shrink-0" aria-label="JT NextGen Tech Hub home">
-            <div className="w-9 h-9 bg-brand-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">JT</span>
-            </div>
-            <div className="hidden sm:block">
-              <span className="font-bold text-brand-800">NextGen</span>
-              <span className="text-gray-500 ml-1 text-sm">Hub</span>
-            </div>
+            <BrandLogo className="w-36 sm:w-44" />
           </Link>
 
           {isPublic && (

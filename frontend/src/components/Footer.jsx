@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import BrandLogo from './BrandLogo';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -58,8 +59,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
           <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0 }}>
             <Link to="/" className="text-2xl font-bold text-white tracking-tight inline-block hover:scale-105 transition-transform">
-              <span className="text-brand-400">JT NextGen</span>
-              <span className="text-white"> Tech Hub</span>
+              <BrandLogo className="w-56" />
             </Link>
             <p className="mt-4 text-sm text-gray-400 leading-relaxed">
               Empowering the next generation with practical digital and technology skills.

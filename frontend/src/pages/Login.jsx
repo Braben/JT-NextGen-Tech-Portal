@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import BrandLogo from '../components/BrandLogo';
 import { Eye, EyeOff, Sparkles, ShieldCheck, Users, BookOpen, ArrowRight, Zap, GraduationCap, Layers, Mail, Lock } from 'lucide-react';
 
 export default function Login() {
@@ -60,10 +61,7 @@ export default function Login() {
       <div className="relative z-10 flex w-full min-h-screen">
         <div className="hidden lg:flex lg:w-[54%] flex-col justify-between p-10 xl:p-14">
           <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center shadow-lg shadow-brand-500/20">
-              <span className="text-white font-black tracking-tight">JT</span>
-            </div>
-            <span className="text-white font-semibold tracking-tight">JT NextGen <span className="text-white/50 font-normal">Tech Hub</span></span>
+            <BrandLogo className="w-56" />
           </motion.div>
 
           <div className="max-w-[560px]">
@@ -114,8 +112,7 @@ export default function Login() {
         <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
           <motion.div initial={{ opacity: 0, y: 18, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.55, ease: [0.22,1,0.36,1] }} className="w-full max-w-[420px]">
             <div className="lg:hidden flex items-center justify-center gap-2 mb-6">
-              <div className="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center shadow-lg shadow-brand-500/20"><span className="text-white font-black">JT</span></div>
-              <span className="text-white font-semibold">JT NextGen</span>
+              <BrandLogo className="w-48" />
             </div>
 
             <div className="relative">

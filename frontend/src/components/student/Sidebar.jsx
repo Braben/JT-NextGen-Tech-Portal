@@ -72,8 +72,7 @@ export default function Sidebar({ isOpen, onClose, onSignOut }) {
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between h-16 px-4 border-b border-navy-700">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center"><span className="text-white font-bold text-xl">JT</span></div>
-              <div><h1 className="font-semibold text-sm">JT NextGen</h1><p className="text-xs text-navy-300">Student Hub</p></div>
+              <BrandLogo />
             </div>
             <button className="lg:hidden p-1 rounded hover:bg-navy-800" onClick={() => onClose(false)} aria-label="Close sidebar"><X className="w-5 h-5" /></button>
           </div>
@@ -125,3 +124,4 @@ export default function Sidebar({ isOpen, onClose, onSignOut }) {
     </>
   );
 }
+import BrandLogo from '../BrandLogo';
