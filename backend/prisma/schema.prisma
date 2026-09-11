@@ -62,6 +62,8 @@ model User {
 
 model Assignment {
   id            String       @id @default(uuid())
+  program_id    String?
+  class_id      String?
   instructor_id String
   title         String
   description   String

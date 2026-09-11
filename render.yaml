@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: jtnextgen-portal-test
+    runtime: node
+    plan: free
+    buildCommand: npm --prefix backend ci && npm --prefix backend run prisma:generate && npm --prefix frontend ci --include=dev && npm --prefix frontend run build
+    startCommand: npm --prefix backend run release:check && npm --prefix backend run prisma:deploy && npm --prefix backend run start:prod
+    healthCheckPath: /api/health
+    autoDeploy: false
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_URL_UNPOOLED
+        sync: false
+      - key: SHADOW_DATABASE_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: SEED_DEMO_ACCOUNTS
+        value: "false"
