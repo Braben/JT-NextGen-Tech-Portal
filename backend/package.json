@@ -1,0 +1,46 @@
+{
+  "name": "jtnextgen-portal-backend",
+  "version": "1.0.0",
+  "description": "JT NextGen Tech Hub Student Exercise & Assignment Portal - Backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "start:prod": "node -e \"process.env.NODE_ENV='production'; require('./server.js')\"",
+    "build": "npm --prefix ../frontend install && npm --prefix ../frontend run build",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
+    "seed": "node seed.js",
+    "release:check": "node scripts/release-check.js",
+    "audit:assignment-scope": "node scripts/audit-assignment-scope.js",
+    "dev": "npx nodemon server.js",
+    "test": "node --test --test-force-exit \"test/*.test.js\" && powershell -Command \"Remove-Item test/.test-portal-*.db -Force -ErrorAction SilentlyContinue\""
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.6.0",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^9.0.3",
+    "openai": "^4.20.0",
+    "pg": "^8.22.0",
+    "prisma": "^6.19.3",
+    "sanitize-html": "^2.17.7",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3",
+    "sql.js": "^1.9.0",
+    "supertest": "^7.2.2",
+    "twilio": "^6.0.2",
+    "uuid": "^14.0.1"
+  },
+  "allowScripts": {
+    "@prisma/client@6.19.3": true,
+    "@prisma/engines@6.19.3": true,
+    "prisma@6.19.3": true
+  }
+}

@@ -1,0 +1,614 @@
+// JT NextGen Portal — Prisma schema (Neon PostgreSQL)
+// Generated from the existing SQLite schema in config/db.js.
+// Run `npx prisma migrate dev` against your Neon DATABASE_URL to create tables.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  directUrl         = env("DATABASE_URL_UNPOOLED")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id                   String                @id @default(uuid())
+  name                 String
+  email                String                @unique
+  password             String
+  role                 String                @default("student")
+  avatar               String?
+  created_at           DateTime              @default(now())
+  location             String?
+  phone                String?               @default("")
+  bio                  String?               @default("")
+  avatar_color         String?               @default("#16a34a")
+  date_of_birth        String?               @default("")
+  gender               String?               @default("")
+  education_level      String?               @default("")
+  computing_experience String?               @default("")
+  goal                 String?
+  mission              String?
+  objectives           String?
+  assignments          Assignment[]
+  submissions          Submission[]          @relation("StudentSubmissions")
+  enrollments          Enrollment[]
+  certificates         Certificate[]
+  messagesSent         Message[]             @relation("MessagesSent")
+  messagesReceived     Message[]             @relation("MessagesReceived")
+  forumTopics          ForumTopic[]
+  forumReplies         ForumReply[]
+  attendanceSessions   AttendanceSession[]
+  attendanceMarked     Attendance[]          @relation("MarkedBy")
+  attendanceOwned      Attendance[]          @relation("AttendanceStudent")
+  notificationSettings NotificationSettings?
+  notificationLog      NotificationLog[]
+  forumLikes           ForumLike[]
+  forumRatings         ForumReplyRating[]
+  materials            Material[]
+  quizSubmissions      QuizSubmission[]
+  payments             Payment[]
+  blogs                Blog[]
+  quizzes              Quiz[]
+  auditLogs            AdminAuditLog[]
+  onboardingAssessments OnboardingAssessment[] @relation("OnboardingStudent")
+  reviewedAssessments   OnboardingAssessment[] @relation("OnboardingReviewer")
+  assignedClasses        ProgramClass[]        @relation("ClassInstructor")
+
+  @@map("users")
+}
+
+model Assignment {
+  id            String       @id @default(uuid())
+  instructor_id String
+  title         String
+  description   String
+  instructions  String?      @default("")
+  rubric        String?      @default("")
+  max_score     Int          @default(100)
+  due_date      DateTime?
+  created_at    DateTime     @default(now())
+  updated_at    DateTime     @default(now())
+  instructor    User         @relation(fields: [instructor_id], references: [id])
+  submissions   Submission[]
+
+  @@index([instructor_id, due_date])
+  @@map("assignments")
+}
+
+model Submission {
+  id            String     @id @default(uuid())
+  assignment_id String
+  student_id    String
+  content       String?    @default("")
+  file_path     String?
+  file_type     String?
+  submitted_at  DateTime   @default(now())
+  status        String?    @default("submitted")
+  assignment    Assignment @relation(fields: [assignment_id], references: [id])
+  student       User       @relation("StudentSubmissions", fields: [student_id], references: [id])
+  grade         Grade?
+
+  @@unique([assignment_id, student_id])
+  @@index([student_id, submitted_at])
+  @@map("submissions")
+}
+
+model Grade {
+  id                  String     @id @default(uuid())
+  submission_id       String     @unique
+  student_id          String
+  assignment_id       String
+  score               Float      @default(0)
+  max_score           Int        @default(100)
+  feedback            String?    @default("")
+  strengths           String?    @default("")
+  weaknesses          String?    @default("")
+  suggestions         String?    @default("")
+  ai_score            Float?
+  ai_feedback         String?    @default("")
+  ai_assessed_at      DateTime?
+  manually_overridden Int        @default(0)
+  graded_by           String?    @default("ai")
+  graded_at           DateTime   @default(now())
+  submission          Submission @relation(fields: [submission_id], references: [id])
+
+  @@map("grades")
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  user_id    String
+  title      String
+  message    String
+  type       String?  @default("info")
+  read       Int      @default(0)
+  related_id String?
+  created_at DateTime @default(now())
+
+  @@index([user_id, read, created_at])
+  @@map("notifications")
+}
+
+model Program {
+  id                 String              @id @default(uuid())
+  title              String
+  slug               String              @unique
+  description        String
+  duration           String?             @default("3 Months")
+  level              String?             @default("Beginner")
+  audience           String?             @default("")
+  outcomes           String?             @default("")
+  icon               String?             @default("")
+  created_at         DateTime            @default(now())
+  enrollments        Enrollment[]
+  certificates       Certificate[]
+  materials          Material[]
+  events             Event[]
+  quizzes            Quiz[]
+  attendanceSessions AttendanceSession[]
+  classes            ProgramClass[]
+  forumCategories    ForumCategory[]
+
+  @@map("programs")
+}
+
+model Enrollment {
+  id           String    @id @default(uuid())
+  student_id   String
+  program_id   String
+  class_id     String?
+  session      String?   @default("Morning")
+  status       String?   @default("pending")
+  enrolled_at  DateTime  @default(now())
+  completed_at DateTime?
+  student      User      @relation(fields: [student_id], references: [id])
+  program      Program   @relation(fields: [program_id], references: [id])
+  class        ProgramClass? @relation(fields: [class_id], references: [id])
+  payments     Payment[]
+  onboardingAssessments OnboardingAssessment[]
+
+  @@unique([student_id, program_id])
+  @@index([program_id, status])
+  @@index([class_id, status])
+  @@map("enrollments")
+}
+
+model ProgramClass {
+  id                String         @id @default(uuid())
+  program_id        String
+  instructor_id     String?
+  forum_category_id String?        @unique
+  name              String
+  code              String         @unique
+  session           String         @default("Morning")
+  capacity          Int            @default(25)
+  start_date        String?
+  end_date          String?
+  status            String         @default("planned")
+  created_at        DateTime       @default(now())
+  updated_at        DateTime       @default(now())
+  program           Program        @relation(fields: [program_id], references: [id])
+  instructor        User?          @relation("ClassInstructor", fields: [instructor_id], references: [id])
+  forumCategory     ForumCategory? @relation("ClassForum", fields: [forum_category_id], references: [id])
+  enrollments       Enrollment[]
+  forumCategories   ForumCategory[] @relation("ForumCategoryClass")
+  attendanceSessions AttendanceSession[]
+
+  @@index([program_id, status])
+  @@index([instructor_id])
+  @@map("program_classes")
+}
+
+model Certificate {
+  id            String   @id @default(uuid())
+  serial_number String   @unique
+  student_id    String
+  program_id    String
+  issue_date    DateTime @default(now())
+  status        String?  @default("valid")
+  student       User     @relation(fields: [student_id], references: [id])
+  program       Program  @relation(fields: [program_id], references: [id])
+
+  @@index([student_id, status])
+  @@index([program_id, status])
+  @@map("certificates")
+}
+
+model Contact {
+  id         String   @id @default(uuid())
+  name       String
+  email      String
+  phone      String?  @default("")
+  message    String
+  created_at DateTime @default(now())
+
+  @@map("contacts")
+}
+
+model OnboardingAssessment {
+  id                   String      @id @default(uuid())
+  student_id           String
+  enrollment_id        String?
+  date_of_birth        String?     @default("")
+  gender               String?     @default("")
+  education_level      String?     @default("")
+  computing_experience String?     @default("")
+  strengths            String?     @default("")
+  greatest_strength    String?     @default("")
+  weaknesses           String?     @default("")
+  weakness_response    String?     @default("")
+  improvement_plan     String?     @default("")
+  status               String      @default("recommended")
+  score                Float?
+  max_score            Int         @default(100)
+  feedback             String?     @default("")
+  reviewed_by          String?
+  reviewed_at          DateTime?
+  created_at           DateTime    @default(now())
+  updated_at           DateTime    @default(now())
+  student              User        @relation("OnboardingStudent", fields: [student_id], references: [id])
+  reviewer             User?       @relation("OnboardingReviewer", fields: [reviewed_by], references: [id])
+  enrollment           Enrollment? @relation(fields: [enrollment_id], references: [id])
+
+  @@index([student_id, created_at])
+  @@index([enrollment_id])
+  @@index([status, created_at])
+  @@map("onboarding_assessments")
+}
+
+model Testimonial {
+  id      String  @id @default(uuid())
+  name    String
+  role    String
+  message String
+  avatar  String? @default("")
+  active  Int     @default(1)
+
+  @@map("testimonials")
+}
+
+model Partner {
+  id       String @id @default(uuid())
+  name     String
+  logo_url String
+  active   Int    @default(1)
+
+  @@map("partners")
+}
+
+model Message {
+  id          String   @id @default(uuid())
+  sender_id   String
+  receiver_id String
+  content     String
+  is_read     Int      @default(0)
+  created_at  DateTime @default(now())
+  sender      User     @relation("MessagesSent", fields: [sender_id], references: [id])
+  receiver    User     @relation("MessagesReceived", fields: [receiver_id], references: [id])
+
+  @@map("messages")
+}
+
+model ForumCategory {
+  id          String       @id @default(uuid())
+  name        String
+  description String?      @default("")
+  type        String?      @default("general")
+  session     String?
+  program_id  String?
+  class_id    String?
+  created_at  DateTime     @default(now())
+  program     Program?     @relation(fields: [program_id], references: [id])
+  class       ProgramClass? @relation("ForumCategoryClass", fields: [class_id], references: [id])
+  linkedClass ProgramClass? @relation("ClassForum")
+  topics      ForumTopic[]
+
+  @@index([class_id])
+  @@map("forum_categories")
+}
+
+model ForumTopic {
+  id          String        @id @default(uuid())
+  category_id String
+  user_id     String
+  title       String
+  content     String
+  is_pinned   Int           @default(0)
+  is_closed   Int           @default(0)
+  views       Int           @default(0)
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @default(now())
+  category    ForumCategory @relation(fields: [category_id], references: [id])
+  user        User          @relation(fields: [user_id], references: [id])
+  replies     ForumReply[]
+  likes       ForumLike[]
+
+  @@map("forum_topics")
+}
+
+model ForumReply {
+  id         String             @id @default(uuid())
+  topic_id   String
+  user_id    String
+  content    String
+  created_at DateTime           @default(now())
+  topic      ForumTopic         @relation(fields: [topic_id], references: [id])
+  user       User               @relation(fields: [user_id], references: [id])
+  ratings    ForumReplyRating[]
+
+  @@map("forum_replies")
+}
+
+model AttendanceSession {
+  id            String       @id @default(uuid())
+  instructor_id String
+  program_id    String
+  class_id      String?
+  title         String?      @default("")
+  date          String
+  closes_at     String
+  status        String?      @default("open")
+  created_at    DateTime     @default(now())
+  instructor    User         @relation(fields: [instructor_id], references: [id])
+  program       Program      @relation(fields: [program_id], references: [id])
+  class         ProgramClass? @relation(fields: [class_id], references: [id])
+  records       Attendance[]
+
+  @@index([instructor_id, date])
+  @@index([program_id, date])
+  @@index([class_id, date])
+  @@map("attendance_sessions")
+}
+
+model Attendance {
+  id         String            @id @default(uuid())
+  session_id String
+  student_id String
+  program_id String
+  marked_by  String
+  date       String
+  status     String?           @default("present")
+  notes      String?           @default("")
+  marked_at  DateTime?         @default(now())
+  created_at DateTime          @default(now())
+  session    AttendanceSession @relation(fields: [session_id], references: [id])
+  student    User              @relation("AttendanceStudent", fields: [student_id], references: [id])
+  marker     User              @relation("MarkedBy", fields: [marked_by], references: [id])
+
+  @@index([student_id, date])
+  @@index([session_id, student_id])
+  @@map("attendance")
+}
+
+model NotificationSettings {
+  id                  String  @id @default(uuid())
+  user_id             String  @unique
+  email_notifications Int     @default(1)
+  sms_notifications   Int     @default(0)
+  phone               String?
+  notify_assignment   Int     @default(1)
+  notify_grade        Int     @default(1)
+  notify_forum        Int     @default(1)
+  notify_message      Int     @default(1)
+  notify_attendance   Int     @default(1)
+  user                User    @relation(fields: [user_id], references: [id])
+
+  @@map("notification_settings")
+}
+
+model NotificationLog {
+  id              String   @id @default(uuid())
+  user_id         String
+  notification_id String?
+  channel         String?  @default("in_app")
+  subject         String?  @default("")
+  message         String
+  status          String?  @default("pending")
+  error           String?
+  created_at      DateTime @default(now())
+  user            User     @relation(fields: [user_id], references: [id])
+
+  @@map("notification_log")
+}
+
+model ForumLike {
+  id           String      @id @default(uuid())
+  user_id      String
+  target_type  String
+  target_id    String
+  created_at   DateTime    @default(now())
+  user         User        @relation(fields: [user_id], references: [id])
+  forumTopic   ForumTopic? @relation(fields: [forumTopicId], references: [id])
+  forumTopicId String?
+
+  @@unique([user_id, target_type, target_id])
+  @@map("forum_likes")
+}
+
+model ForumReplyRating {
+  id         String     @id @default(uuid())
+  user_id    String
+  reply_id   String
+  rating     Int
+  created_at DateTime   @default(now())
+  user       User       @relation(fields: [user_id], references: [id])
+  reply      ForumReply @relation(fields: [reply_id], references: [id])
+
+  @@unique([user_id, reply_id])
+  @@map("forum_reply_ratings")
+}
+
+model Material {
+  id              String   @id @default(uuid())
+  instructor_id   String
+  program_id      String
+  title           String
+  description     String?  @default("")
+  file_path       String?
+  file_type       String?
+  link_url        String?
+  created_at      DateTime @default(now())
+  audience_groups String?  @default("[\"active\"]")
+  audience_year   String?
+  audience_month  String?
+  instructor      User     @relation(fields: [instructor_id], references: [id])
+  program         Program  @relation(fields: [program_id], references: [id])
+
+  @@index([instructor_id, created_at])
+  @@index([program_id, created_at])
+  @@map("materials")
+}
+
+model Event {
+  id          String   @id @default(uuid())
+  program_id  String?
+  title       String
+  description String?  @default("")
+  event_date  String
+  start_time  String?  @default("")
+  end_time    String?  @default("")
+  type        String?  @default("class")
+  created_at  DateTime @default(now())
+  is_public   Int      @default(0)
+  created_by  String?
+  program     Program? @relation(fields: [program_id], references: [id])
+
+  @@index([created_by, event_date])
+  @@index([program_id, event_date])
+  @@map("events")
+}
+
+model Blog {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  excerpt     String?  @default("")
+  content     String
+  cover_image String?
+  author_id   String
+  published   Int      @default(0)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now())
+  author      User     @relation(fields: [author_id], references: [id])
+
+  @@map("blogs")
+}
+
+model Quiz {
+  id            String           @id @default(uuid())
+  instructor_id String
+  program_id    String
+  title         String
+  description   String?          @default("")
+  due_date      String?
+  time_limit    Int              @default(0)
+  created_at    DateTime         @default(now())
+  instructor    User             @relation(fields: [instructor_id], references: [id])
+  program       Program          @relation(fields: [program_id], references: [id])
+  questions     QuizQuestion[]
+  submissions   QuizSubmission[]
+
+  @@map("quizzes")
+}
+
+model QuizQuestion {
+  id         String       @id @default(uuid())
+  quiz_id    String
+  question   String
+  type       String?      @default("multiple_choice")
+  points     Int          @default(1)
+  sort_order Int          @default(0)
+  quiz       Quiz         @relation(fields: [quiz_id], references: [id])
+  options    QuizOption[]
+  answers    QuizAnswer[]
+
+  @@map("quiz_questions")
+}
+
+model QuizOption {
+  id          String       @id @default(uuid())
+  question_id String
+  option_text String
+  is_correct  Int          @default(0)
+  sort_order  Int          @default(0)
+  question    QuizQuestion @relation(fields: [question_id], references: [id])
+
+  @@map("quiz_options")
+}
+
+model QuizSubmission {
+  id           String       @id @default(uuid())
+  quiz_id      String
+  student_id   String
+  score        Float        @default(0)
+  total_points Float        @default(0)
+  submitted_at DateTime     @default(now())
+  quiz         Quiz         @relation(fields: [quiz_id], references: [id])
+  student      User         @relation(fields: [student_id], references: [id])
+  answers      QuizAnswer[]
+
+  @@map("quiz_submissions")
+}
+
+model QuizAnswer {
+  id            String         @id @default(uuid())
+  submission_id String
+  question_id   String
+  answer        String?        @default("")
+  is_correct    Int            @default(0)
+  points_earned Float          @default(0)
+  submission    QuizSubmission @relation(fields: [submission_id], references: [id])
+  question      QuizQuestion   @relation(fields: [question_id], references: [id])
+
+  @@map("quiz_answers")
+}
+
+model Payment {
+  id            String     @id @default(uuid())
+  student_id    String
+  enrollment_id String
+  amount        Float
+  paid_amount   Float      @default(0)
+  status        String?    @default("pending")
+  due_date      String?
+  paid_at       DateTime?
+  notes         String?    @default("")
+  created_at    DateTime   @default(now())
+  student       User       @relation(fields: [student_id], references: [id])
+  enrollment    Enrollment @relation(fields: [enrollment_id], references: [id])
+
+  @@index([student_id, status])
+  @@index([enrollment_id, status])
+  @@map("payments")
+}
+
+model AdminAuditLog {
+  id          String   @id @default(uuid())
+  admin_id    String
+  admin_name  String?  @default("")
+  actor_role  String?  @default("")
+  action      String // create | update | delete
+  entity_type String // e.g. user, program, blog, certificate, enrollment
+  entity_id   String?
+  details     String?  @default("")
+  created_at  DateTime @default(now())
+  admin       User     @relation(fields: [admin_id], references: [id])
+
+  @@index([created_at])
+  @@index([admin_id, created_at])
+  @@map("admin_audit_log")
+}
+
+model LoginAttempt {
+  id         String   @id @default(uuid())
+  email      String
+  ip         String?  @default("")
+  success    Int      @default(0)
+  created_at DateTime @default(now())
+
+  @@index([email, created_at])
+  @@map("login_attempts")
+}
