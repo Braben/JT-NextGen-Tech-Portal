@@ -30,13 +30,14 @@ const dbPath = path.join(__dirname, '..', 'portal.db');
 
 let db = null;
 let readyResolve = null;
+let readyReject = null;
 
 /**
  * Promise that resolves once the database is fully initialised
  * (connection open + schema created + migrations run).
  * @type {Promise<void>}
  */
-const ready = new Promise((resolve) => { readyResolve = resolve; });
+const ready = new Promise((resolve, reject) => { readyResolve = resolve; readyReject = reject; });
 
 /* ================================================================== */
 /*  Initialisation                                                     */
@@ -361,7 +362,7 @@ const handler = {
 };
 
 // Kick off async initialisation
-initDb();
+initDb().catch(readyReject);
 
 const proxy = new Proxy({}, handler);
 module.exports = proxy;

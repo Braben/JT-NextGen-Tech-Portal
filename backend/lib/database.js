@@ -50,13 +50,8 @@ class Database {
     const url = (connectionString || process.env.DATABASE_URL || '').trim();
 
     if (url.startsWith('postgres://') || url.startsWith('postgresql://')) {
-      try {
-        await this._connectPostgres(url);
-      } catch (e) {
-        if (process.env.NODE_ENV === 'production') throw e;
-        console.warn(`[db] Postgres unreachable (${e.message}), falling back to SQLite ./portal.db`);
-        await this._connectSQLite('sqlite://./portal.db');
-      }
+      // A connection failure must never silently switch application datasets.
+      await this._connectPostgres(url);
     } else {
       await this._connectSQLite(url || 'sqlite://./portal.db');
     }
