@@ -6,6 +6,8 @@
   --core: 13 56 35; /* #0D3823 */
   --turquoise: 0 168 150; /* #00A896 */
   --accent: 255 204 8; /* #FFCC08 */
+  --field: 255 255 255;
+  --field-placeholder: 77 102 87;
 }
 :root.dark {
   --page: 10 20 15; /* #0A140F */
@@ -14,4 +16,6 @@
   --core: 26 83 54; /* #1A5336 */
   --turquoise: 51 194 177; /* #33C2B1 */
   --accent: 252 215 62; /* #FCD73E */
+  --field: 10 20 15;
+  --field-placeholder: 160 188 174;
 }

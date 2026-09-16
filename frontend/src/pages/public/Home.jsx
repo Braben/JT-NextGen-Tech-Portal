@@ -84,7 +84,7 @@ export default function Home() {
 
 function Hero() {
   return (
-    <section aria-labelledby="hero-title" className="relative isolate flex min-h-[min(640px,calc(100svh-120px))] items-center overflow-hidden bg-teal-950 text-white">
+    <section aria-labelledby="hero-title" className="relative isolate flex min-h-[min(640px,calc(100svh-120px))] items-center overflow-hidden bg-core text-white">
       <img src="https://jtnextgen.netlify.app/bg.jpg" alt="" fetchPriority="high"
         className="absolute inset-0 -z-20 h-full w-full object-cover" />
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-black/55" />
@@ -100,7 +100,7 @@ function Hero() {
           Empowering Minds, Transforming Futures.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link to="/register" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-teal-700 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-teal-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+          <Link to="/register" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-accent px-6 py-3 text-sm font-semibold text-[#0D1F16] transition-colors hover:brightness-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
             Register Now <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
           <Link to="/programs" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md border border-white bg-white px-6 py-3 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">

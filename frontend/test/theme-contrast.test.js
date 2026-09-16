@@ -14,7 +14,7 @@ function contrast(a, b) {
 for (const [mode, block] of [...css.matchAll(/:root(\.dark)?\s*\{([^}]+)\}/g)].map((m) => [m[1] ? 'dark' : 'light', m[2]])) {
   const tokens = Object.fromEntries([...block.matchAll(/--([\w-]+):\s*(\d+) (\d+) (\d+)/g)].map((m) => [m[1], m.slice(2).map(Number)]));
   test(`${mode}: primary copy and button labels have at least 4.5:1 contrast`, () => {
-    for (const [fg, bg] of [[tokens.ink, tokens.page], [tokens.ink, tokens.surface], [[255,255,255], tokens.core], [[13,31,22], tokens.turquoise], [[13,31,22], tokens.accent]]) {
+    for (const [fg, bg] of [[tokens.ink, tokens.page], [tokens.ink, tokens.surface], [tokens.ink, tokens.field], [tokens['field-placeholder'], tokens.field], [[255,255,255], tokens.core], [[13,31,22], tokens.turquoise], [[13,31,22], tokens.accent]]) {
       assert.ok(contrast(fg, bg) >= 4.5, `${fg} on ${bg}: ${contrast(fg, bg).toFixed(2)}:1`);
     }
   });

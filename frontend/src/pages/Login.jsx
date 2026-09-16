@@ -48,14 +48,14 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#070F1F] relative overflow-hidden selection:bg-brand-500/30">
+    <div className="min-h-screen flex bg-core relative overflow-hidden selection:bg-brand-500/30">
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute inset-0 bg-[#070F1F]" />
+        <div className="absolute inset-0 bg-core" />
         <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: `linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)`, backgroundSize: '48px 48px' }} />
         <motion.div animate={{ x: [0, 30, 0], y: [0, -20, 0], scale: [1, 1.08, 1] }} transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }} className="absolute -top-32 -left-32 w-[580px] h-[580px] bg-brand-600/25 rounded-full blur-[110px]" />
         <motion.div animate={{ x: [0, -25, 0], y: [0, 18, 0], scale: [1, 1.1, 1] }} transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut', delay: 1 }} className="absolute top-[18%] -right-40 w-[620px] h-[620px] bg-emerald-500/15 rounded-full blur-[120px]" />
         <motion.div animate={{ x: [0, 18, 0], y: [0, -14, 0] }} transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut', delay: 2 }} className="absolute bottom-0 left-[22%] w-[760px] h-[480px] bg-navy-700/30 rounded-full blur-[100px]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#070F1F] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-core via-transparent to-transparent" />
       </div>
 
       <div className="relative z-10 flex w-full min-h-screen">
@@ -117,7 +117,7 @@ export default function Login() {
 
             <div className="relative">
               <div className="absolute -inset-[1px] rounded-[26px] bg-gradient-to-br from-brand-500/30 via-white/10 to-transparent opacity-60 blur-[0.5px]" />
-              <div className="relative rounded-[24px] bg-white/[0.98] dark:bg-white/[0.98] backdrop-blur-xl border border-white/60 shadow-[0_20px_60px_rgba(0,0,0,0.35),0_1px_0_rgba(255,255,255,0.6)_inset] overflow-hidden">
+              <div className="relative rounded-[24px] bg-surface backdrop-blur-xl border border-white/60 shadow-[0_20px_60px_rgba(0,0,0,0.35),0_1px_0_rgba(255,255,255,0.6)_inset] overflow-hidden">
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent opacity-70" />
                 <div className="absolute -top-24 -right-24 w-56 h-56 bg-brand-500/10 rounded-full blur-2xl" />
                 <div className="absolute -bottom-20 -left-20 w-56 h-56 bg-emerald-500/10 rounded-full blur-2xl" />
@@ -202,7 +202,7 @@ export default function Login() {
                         { id: 'instructor', label: 'Instructor', sub: 'Teach & grade', color: 'from-brand-500 to-emerald-500' },
                         { id: 'student', label: 'Student', sub: 'Learn & submit', color: 'from-sky-500 to-indigo-500' },
                       ].map((r) => (
-                        <button key={r.id} onClick={()=>fillDemo(r.id)} className="group relative rounded-2xl border border-gray-100 bg-gray-50/60 hover:bg-white hover:border-gray-200 hover:shadow-md p-3 text-left transition-all">
+                        <button key={r.id} onClick={()=>fillDemo(r.id)} className="group relative rounded-2xl border border-gray-100 bg-page hover:bg-white hover:border-gray-200 hover:shadow-md p-3 text-left transition-all">
                           <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${r.color} flex items-center justify-center text-white shadow-sm`}>
                             {r.id==='admin' ? <ShieldCheck className="w-4 h-4" /> : r.id==='instructor' ? <Layers className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
                           </div>

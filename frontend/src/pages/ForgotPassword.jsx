@@ -25,13 +25,13 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#070F1F] relative overflow-hidden selection:bg-brand-500/30">
+    <div className="min-h-screen flex bg-core relative overflow-hidden selection:bg-brand-500/30">
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute inset-0 bg-[#070F1F]" />
+        <div className="absolute inset-0 bg-core" />
         <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: `linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)`, backgroundSize: '48px 48px' }} />
         <motion.div animate={{ x: [0,28,0], y: [0,-18,0] }} transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }} className="absolute -top-32 -left-32 w-[580px] h-[580px] bg-brand-600/25 rounded-full blur-[110px]" />
         <motion.div animate={{ x: [0,-24,0], y: [0,16,0] }} transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut', delay: 1 }} className="absolute top-[18%] -right-40 w-[620px] h-[620px] bg-emerald-500/15 rounded-full blur-[120px]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#070F1F] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-core via-transparent to-transparent" />
       </div>
       <div className="relative z-10 flex w-full min-h-screen items-center justify-center p-4">
         <motion.div initial={{ opacity: 0, y: 18, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.55, ease: [0.22,1,0.36,1] }} className="w-full max-w-[420px]">
@@ -41,7 +41,7 @@ export default function ForgotPassword() {
           </div>
           <div className="relative">
             <div className="absolute -inset-[1px] rounded-[26px] bg-gradient-to-br from-brand-500/30 via-white/10 to-transparent opacity-60" />
-            <div className="relative rounded-[24px] bg-white/[0.98] backdrop-blur-xl border border-white/60 shadow-[0_20px_60px_rgba(0,0,0,0.35)] overflow-hidden">
+            <div className="relative rounded-[24px] bg-surface backdrop-blur-xl border border-white/60 shadow-[0_20px_60px_rgba(0,0,0,0.35)] overflow-hidden">
               <div className="p-7 sm:p-8">
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-50 border border-brand-100 text-[11px] font-semibold tracking-wide text-brand-700"><Sparkles className="w-3 h-3" /> FORGOT PASSWORD</div>
                 <h1 className="text-[22px] font-black tracking-tight text-gray-900 mt-3 leading-none">Reset your password</h1>

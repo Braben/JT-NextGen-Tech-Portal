@@ -36,7 +36,7 @@ function LayoutInner({ children }) {
   return (
     <div className="min-h-screen flex flex-col">
       {!isDashboard && <Navbar />}
-      <main className={`flex-1 w-full ${isDashboard ? '' : 'max-w-7xl mx-auto px-4 py-6'}`}>
+      <main className={`flex-1 w-full ${isDashboard ? '' : 'public-content max-w-7xl mx-auto px-4 py-6'}`}>
         {children}
       </main>
       {!user && <Footer />}

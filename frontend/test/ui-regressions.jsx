@@ -8,12 +8,15 @@ import { ToastProvider } from '../src/context/ToastContext';
 import { AuthProvider } from '../src/context/AuthContext';
 import { authAPI, programAPI, systemAPI, adminAPI, enrollmentAPI, classAPI } from '../src/api';
 import Register from '../src/pages/public/Register';
+import Login from '../src/pages/Login';
+import Contact from '../src/pages/public/Contact';
 import ApplicationSubmitted from '../src/pages/public/ApplicationSubmitted';
 import SystemManagement from '../src/pages/admin/SystemManagement';
 import EnrollmentsManagement from '../src/pages/admin/EnrollmentsManagement';
 import '../src/index.css';
 
 const mode = new URLSearchParams(location.search).get('mode') || 'modal';
+document.documentElement.classList.toggle('dark', new URLSearchParams(location.search).get('theme') === 'dark');
 if (localStorage.getItem('token') === 'local-fixture-token') {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
@@ -83,7 +86,7 @@ function ModalFixture() {
 
 createRoot(document.getElementById('root')).render(
   <ToastProvider>
-    {mode === 'submitted' ? <MemoryRouter initialEntries={[{ pathname: '/register/submitted', state: { applicationSubmitted: true } }]}><ApplicationSubmitted /></MemoryRouter> : mode === 'enrollment' ? <MemoryRouter><EnrollmentsManagement /></MemoryRouter> : mode === 'modal' ? <ModalFixture /> : ['register', 'program-failure'].includes(mode) ?
+    {['login', 'contact'].includes(mode) ? <AuthProvider><MemoryRouter><main className="public-content">{mode === 'login' ? <Login /> : <Contact />}</main></MemoryRouter></AuthProvider> : mode === 'submitted' ? <MemoryRouter initialEntries={[{ pathname: '/register/submitted', state: { applicationSubmitted: true } }]}><ApplicationSubmitted /></MemoryRouter> : mode === 'enrollment' ? <MemoryRouter><EnrollmentsManagement /></MemoryRouter> : mode === 'modal' ? <ModalFixture /> : ['register', 'program-failure'].includes(mode) ?
       <AuthProvider><MemoryRouter initialEntries={['/register/account']}><Routes>
         <Route path="/register/:page" element={<Register />} />
         <Route path="/register/submitted" element={<Submitted />} />

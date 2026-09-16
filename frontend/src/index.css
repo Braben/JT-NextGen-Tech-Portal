@@ -285,6 +285,38 @@
   .dashboard-content :where(.grid, .flex, .inline-flex) > * { min-width: 0; }
   .dashboard-content :where(input, select, textarea) { min-width: 0; max-width: 100%; }
   .dashboard-content :where(.prose, [contenteditable]) { overflow-wrap: anywhere; }
-  .dashboard-content :where(.prose, [contenteditable]) pre { max-width: 100%; overflow-x: auto; }
+.dashboard-content :where(.prose, [contenteditable]) pre { max-width: 100%; overflow-x: auto; }
   .dashboard-content .card > .flex.items-center.justify-between { flex-wrap: wrap; gap: 0.75rem; }
 }
+
+/* A single foreground/background pair for every text-entry control, including
+   public forms that do not use the shared Input component. Keep these rules
+   after utilities so legacy text colors cannot make typed values unreadable. */
+:root :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"]), textarea, select) {
+  color: rgb(var(--ink));
+  background-color: rgb(var(--field));
+  caret-color: rgb(var(--ink));
+}
+:root :is(input, textarea)::placeholder {
+  color: rgb(var(--field-placeholder));
+  opacity: 1;
+}
+:root :is(input, textarea, select).bg-transparent { border-radius: inherit; }
+:root select :is(option, optgroup) {
+  color: rgb(var(--ink));
+  background-color: rgb(var(--field));
+}
+:root :is(input, textarea):autofill {
+  color: rgb(var(--ink));
+  caret-color: rgb(var(--ink));
+}
+:root :is(input, textarea):-webkit-autofill {
+  -webkit-text-fill-color: rgb(var(--ink));
+  box-shadow: 0 0 0 1000px rgb(var(--field)) inset;
+  caret-color: rgb(var(--ink));
+}
+/* The accent is reserved for small emphasis and primary campaign actions. */
+:root .bg-accent, :root .bg-accent :is(span, svg) { color: #0D1F16; }
+.public-content { color: rgb(var(--ink)); background-color: rgb(var(--page)); }
+.public-content .text-gray-400 { color: rgb(var(--field-placeholder)); }
+.dark .public-content :is(.bg-gray-50\/60, .bg-white\/80, .bg-white\/90) { background-color: rgb(var(--surface)); }

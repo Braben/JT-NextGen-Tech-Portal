@@ -276,7 +276,7 @@ export default function Register() {
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
         <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(22,163,74,0.14),transparent_42%,rgba(30,64,175,0.14))]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#07111f] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-core via-transparent to-transparent" />
       </div>
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-6 sm:px-6 lg:px-8">
@@ -318,22 +318,22 @@ export default function Register() {
             <div className="relative mx-auto max-w-[760px]">
               <div className="absolute -inset-[1px] rounded-[28px] bg-gradient-to-br from-brand-500/30 via-white/10 to-transparent opacity-70" />
               <div className="relative overflow-hidden rounded-[26px] border border-white/60 bg-white shadow-[0_20px_60px_rgba(0,0,0,0.35),0_1px_0_rgba(255,255,255,0.6)_inset]">
-                <div className="border-b border-slate-100 px-5 py-5 sm:px-7">
+                <div className="border-b border-gray-100 px-5 py-5 sm:px-7">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <div className="inline-flex items-center gap-1.5 rounded-full border border-brand-100 bg-brand-50 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-brand-700">
                         <Sparkles className="h-3 w-3" /> REGISTRATION
                       </div>
-                      <h2 className="mt-3 text-2xl font-black tracking-tight text-slate-950">{currentPage.title}</h2>
-                      <p className="mt-1 text-sm text-slate-500">{currentPage.description}</p>
+                      <h2 className="mt-3 text-2xl font-black tracking-tight text-ink">{currentPage.title}</h2>
+                      <p className="mt-1 text-sm text-gray-500">{currentPage.description}</p>
                     </div>
-                    <div className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-white sm:flex">
+                    <div className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-core text-white sm:flex">
                       <GraduationCap className="h-5 w-5" />
                     </div>
                   </div>
 
                   <div className="mt-5">
-                    <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-slate-100">
+                    <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-gray-100">
                       <div className="h-full rounded-full bg-brand-600 transition-all duration-300" style={{ width: `${progress}%` }} />
                     </div>
                     <div className="grid gap-2 sm:grid-cols-3">
@@ -342,15 +342,15 @@ export default function Register() {
                           key={item.key}
                           to={index <= pageIndex ? item.path : '#'}
                           onClick={(event) => { if (index > pageIndex) event.preventDefault(); }}
-                          className={`rounded-xl border px-3 py-2 text-left transition-colors ${index === pageIndex ? 'border-brand-200 bg-brand-50' : index < pageIndex ? 'border-emerald-100 bg-emerald-50' : 'border-slate-100 bg-slate-50'}`}
+                          className={`rounded-xl border px-3 py-2 text-left transition-colors ${index === pageIndex ? 'border-brand-200 bg-brand-50' : index < pageIndex ? 'border-emerald-100 bg-emerald-50' : 'border-gray-100 bg-gray-50'}`}
                         >
                           <div className="flex items-center gap-2">
-                            <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${index <= pageIndex ? 'bg-brand-600 text-white' : 'bg-slate-200 text-slate-500'}`}>
+                            <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${index <= pageIndex ? 'bg-brand-600 text-white' : 'bg-gray-200 text-gray-500'}`}>
                               {index < pageIndex ? <Check className="h-3.5 w-3.5" /> : index + 1}
                             </span>
                             <div className="min-w-0">
-                              <p className="truncate text-xs font-bold text-slate-800">{item.title}</p>
-                              <p className="truncate text-[11px] text-slate-500">{item.description}</p>
+                              <p className="truncate text-xs font-bold text-gray-800">{item.title}</p>
+                              <p className="truncate text-[11px] text-gray-500">{item.description}</p>
                             </div>
                           </div>
                         </Link>
@@ -376,7 +376,7 @@ export default function Register() {
                       )}
                       {page === 'profile' && (
                         <>
-                          {programsLoading && <p role="status" className="mb-4 text-sm text-slate-600">Loading programs...</p>}
+                          {programsLoading && <p role="status" className="mb-4 text-sm text-gray-600">Loading programs...</p>}
                           {programsError && <div role="alert" className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{programsError} <button type="button" onClick={loadPrograms} disabled={programsLoading} className="font-semibold underline">Retry</button></div>}
                           <ProfilePage form={form} programs={programs} selectedProgram={selectedProgram} focused={focused} fieldErrors={fieldErrors} setFocused={setFocused} setValue={setValue} update={update} />
                         </>
@@ -387,27 +387,27 @@ export default function Register() {
                     </motion.div>
                   </AnimatePresence>
 
-                  <div className="mt-6 flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="mt-6 flex flex-col-reverse gap-3 border-t border-gray-100 pt-5 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       {pageIndex > 0 && (
-                        <button type="button" onClick={goBack} className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50">
+                        <button type="button" onClick={goBack} className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-50">
                           <ArrowLeft className="h-4 w-4" /> Back
                         </button>
                       )}
                     </div>
                     {page !== 'review' ? (
-                      <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-black">
+                      <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-xl bg-core px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-700">
                         Continue <ArrowRight className="h-4 w-4" />
                       </button>
                     ) : (
-                      <button type="submit" disabled={loading} className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-black disabled:cursor-not-allowed disabled:opacity-60">
+                      <button type="submit" disabled={loading} className="inline-flex items-center justify-center gap-2 rounded-xl bg-core px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60">
                         {loading ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" /> : <CheckCircle2 className="h-4 w-4" />}
                         Submit Application
                       </button>
                     )}
                   </div>
 
-                  <p className="mt-5 text-center text-[13px] text-slate-500">
+                  <p className="mt-5 text-center text-[13px] text-gray-500">
                     Already have an account? <Link to="/login" className="font-semibold text-brand-700 hover:text-brand-800">Sign in</Link>
                   </p>
                 </form>
@@ -436,9 +436,9 @@ function AccountPage({ form, focused, fieldErrors, passwordStrength, showPasswor
       </div>
       <div className="flex items-center gap-2">
         {[1, 2, 3].map((item) => (
-          <div key={item} className={`h-1.5 flex-1 rounded-full transition-colors ${passwordStrength >= item ? (passwordStrength === 1 ? 'bg-red-400' : passwordStrength === 2 ? 'bg-amber-400' : 'bg-emerald-500') : 'bg-slate-100'}`} />
+          <div key={item} className={`h-1.5 flex-1 rounded-full transition-colors ${passwordStrength >= item ? (passwordStrength === 1 ? 'bg-red-400' : passwordStrength === 2 ? 'bg-amber-400' : 'bg-emerald-500') : 'bg-gray-100'}`} />
         ))}
-        <span className="w-12 text-right text-[11px] text-slate-400">{passwordStrength === 0 ? '' : passwordStrength === 1 ? 'Weak' : passwordStrength === 2 ? 'Good' : 'Strong'}</span>
+        <span className="w-12 text-right text-[11px] text-gray-400">{passwordStrength === 0 ? '' : passwordStrength === 1 ? 'Weak' : passwordStrength === 2 ? 'Good' : 'Strong'}</span>
       </div>
     </div>
   );
@@ -451,8 +451,8 @@ function ProfilePage({ form, programs, selectedProgram, focused, fieldErrors, se
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
           <FieldLabel icon={BookOpen}>Program</FieldLabel>
-          <div className={`rounded-xl border bg-white px-2 py-1 transition-all ${fieldErrors.program_id ? 'border-red-300 ring-4 ring-red-500/10' : focused === 'program_id' ? 'border-brand-500 ring-4 ring-brand-500/10' : 'border-slate-200 hover:border-slate-300'}`}>
-            <select value={form.program_id} onFocus={() => setFocused('program_id')} onBlur={() => setFocused(null)} onChange={update('program_id')} aria-invalid={Boolean(fieldErrors.program_id)} className="w-full bg-transparent px-2 py-2.5 text-sm text-slate-900 outline-none">
+          <div className={`rounded-xl border bg-white px-2 py-1 transition-all ${fieldErrors.program_id ? 'border-red-300 ring-4 ring-red-500/10' : focused === 'program_id' ? 'border-brand-500 ring-4 ring-brand-500/10' : 'border-gray-200 hover:border-gray-300'}`}>
+            <select value={form.program_id} onFocus={() => setFocused('program_id')} onBlur={() => setFocused(null)} onChange={update('program_id')} aria-invalid={Boolean(fieldErrors.program_id)} className="w-full bg-transparent px-2 py-2.5 text-sm text-ink outline-none">
               <option value="">Select program</option>
               {programs.map((program) => <option key={program.id} value={program.id}>{program.title}</option>)}
             </select>
@@ -463,7 +463,7 @@ function ProfilePage({ form, programs, selectedProgram, focused, fieldErrors, se
           <FieldLabel icon={Clock}>Session</FieldLabel>
           <div className="grid grid-cols-2 gap-2">
             {['Morning', 'Evening'].map((session) => (
-              <button key={session} type="button" onClick={() => setValue('session', session)} className={`rounded-xl border py-3 text-sm font-semibold transition-all ${form.session === session ? 'border-slate-950 bg-slate-950 text-white shadow' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'}`}>
+              <button key={session} type="button" onClick={() => setValue('session', session)} className={`rounded-xl border py-3 text-sm font-semibold transition-all ${form.session === session ? 'border-core bg-core text-white shadow' : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'}`}>
                 {session}
               </button>
             ))}
@@ -475,7 +475,7 @@ function ProfilePage({ form, programs, selectedProgram, focused, fieldErrors, se
       {selectedProgram && (
         <div className="rounded-xl border border-brand-100 bg-brand-50 px-4 py-3 text-sm text-brand-900">
           <p className="font-semibold">{selectedProgram.title}</p>
-          <p className="mt-1 text-xs leading-5 text-brand-800/75">{selectedProgram.duration || '3 Months'} - {selectedProgram.level || 'Beginner'} - {selectedProgram.audience || 'Open to motivated learners'}</p>
+          <p className="mt-1 text-xs leading-5 text-brand-800 dark:text-brand-300">{selectedProgram.duration || '3 Months'} - {selectedProgram.level || 'Beginner'} - {selectedProgram.audience || 'Open to motivated learners'}</p>
         </div>
       )}
 
@@ -483,8 +483,8 @@ function ProfilePage({ form, programs, selectedProgram, focused, fieldErrors, se
         <TextField label="Date of Birth" field="date_of_birth" type="date" value={form.date_of_birth} error={fieldErrors.date_of_birth} focused={focused} setFocused={setFocused} update={update} />
         <label className="block">
           <FieldLabel icon={GraduationCap}>Highest Level of Education</FieldLabel>
-          <div className={`rounded-xl border bg-white px-2 py-1 transition-all ${fieldErrors.education_level ? 'border-red-300 ring-4 ring-red-500/10' : focused === 'education_level' ? 'border-brand-500 ring-4 ring-brand-500/10' : 'border-slate-200 hover:border-slate-300'}`}>
-            <select value={form.education_level} onFocus={() => setFocused('education_level')} onBlur={() => setFocused(null)} onChange={update('education_level')} aria-invalid={Boolean(fieldErrors.education_level)} className="w-full bg-transparent px-2 py-2.5 text-sm text-slate-900 outline-none">
+          <div className={`rounded-xl border bg-white px-2 py-1 transition-all ${fieldErrors.education_level ? 'border-red-300 ring-4 ring-red-500/10' : focused === 'education_level' ? 'border-brand-500 ring-4 ring-brand-500/10' : 'border-gray-200 hover:border-gray-300'}`}>
+            <select value={form.education_level} onFocus={() => setFocused('education_level')} onBlur={() => setFocused(null)} onChange={update('education_level')} aria-invalid={Boolean(fieldErrors.education_level)} className="w-full bg-transparent px-2 py-2.5 text-sm text-ink outline-none">
               <option value="">Select education level</option>
               {educationOptions.map((option) => <option key={option} value={option}>{option}</option>)}
             </select>
@@ -516,9 +516,9 @@ function ReviewPage({ form, selectedProgram, fieldErrors, update }) {
       <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
         After submission, your enrollment stays pending. Admissions may recommend an aptitude test from the admin dashboard, and you will receive a notification if it is needed.
       </div>
-      <label className={`flex items-start gap-3 rounded-xl border px-4 py-3 ${fieldErrors.consent ? 'border-red-200 bg-red-50' : 'border-slate-200 bg-slate-50'}`}>
-        <input type="checkbox" checked={form.consent} onChange={update('consent')} aria-invalid={Boolean(fieldErrors.consent)} className="mt-1 h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500" />
-        <span className="text-sm leading-6 text-slate-600">
+      <label className={`flex items-start gap-3 rounded-xl border px-4 py-3 ${fieldErrors.consent ? 'border-red-200 bg-red-50' : 'border-gray-200 bg-gray-50'}`}>
+        <input type="checkbox" checked={form.consent} onChange={update('consent')} aria-invalid={Boolean(fieldErrors.consent)} className="mt-1 h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500" />
+        <span className="text-sm leading-6 text-gray-600">
           I consent to the collection and processing of my personal data for evaluating my application and preferred program.
         </span>
       </label>
@@ -529,9 +529,9 @@ function ReviewPage({ form, selectedProgram, fieldErrors, update }) {
 
 function SummaryItem({ label, value }) {
   return (
-    <div className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
-      <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-      <p className="mt-1 text-sm font-semibold text-slate-900">{value}</p>
+    <div className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
+      <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">{label}</p>
+      <p className="mt-1 text-sm font-semibold text-ink">{value}</p>
     </div>
   );
 }
@@ -539,12 +539,12 @@ function SummaryItem({ label, value }) {
 function SectionHeading({ icon: Icon, title, subtitle }) {
   return (
     <div className="flex items-start gap-3">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-white">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-core text-white">
         <Icon className="h-5 w-5" />
       </span>
       <div>
-        <h3 className="text-base font-bold text-slate-950">{title}</h3>
-        <p className="mt-0.5 text-sm text-slate-500">{subtitle}</p>
+        <h3 className="text-base font-bold text-ink">{title}</h3>
+        <p className="mt-0.5 text-sm text-gray-500">{subtitle}</p>
       </div>
     </div>
   );
@@ -552,8 +552,8 @@ function SectionHeading({ icon: Icon, title, subtitle }) {
 
 function FieldLabel({ icon: Icon, children }) {
   return (
-    <span className="mb-1.5 flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-slate-700">
-      {Icon && <Icon className="h-3 w-3 text-slate-400" />}
+    <span className="mb-1.5 flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-gray-700">
+      {Icon && <Icon className="h-3 w-3 text-gray-400" />}
       {children}
     </span>
   );
@@ -569,7 +569,7 @@ function TextField({ icon, label, field, value, error, focused, setFocused, upda
   return (
     <label className="block">
       <FieldLabel icon={icon}>{label}</FieldLabel>
-      <div className={`rounded-xl border bg-white transition-all ${error ? 'border-red-300 ring-4 ring-red-500/10' : focused === field ? 'border-brand-500 ring-4 ring-brand-500/10' : 'border-slate-200 hover:border-slate-300'}`}>
+      <div className={`rounded-xl border bg-white transition-all ${error ? 'border-red-300 ring-4 ring-red-500/10' : focused === field ? 'border-brand-500 ring-4 ring-brand-500/10' : 'border-gray-200 hover:border-gray-300'}`}>
         <input
           type={type}
           placeholder={placeholder}
@@ -580,7 +580,7 @@ function TextField({ icon, label, field, value, error, focused, setFocused, upda
           autoComplete={autoComplete}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? errorId : undefined}
-          className="w-full bg-transparent px-3.5 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400"
+          className="w-full bg-transparent px-3.5 py-3 text-sm text-ink outline-none placeholder:text-gray-400"
         />
       </div>
       <FieldError id={errorId} message={error} />
@@ -593,7 +593,7 @@ function PasswordField({ label, field, value, error, focused, visible, setVisibl
   return (
     <label className="block">
       <FieldLabel icon={Lock}>{label}</FieldLabel>
-      <div className={`relative rounded-xl border bg-white transition-all ${error ? 'border-red-300 ring-4 ring-red-500/10' : focused === field ? 'border-brand-500 ring-4 ring-brand-500/10' : 'border-slate-200 hover:border-slate-300'}`}>
+      <div className={`relative rounded-xl border bg-white transition-all ${error ? 'border-red-300 ring-4 ring-red-500/10' : focused === field ? 'border-brand-500 ring-4 ring-brand-500/10' : 'border-gray-200 hover:border-gray-300'}`}>
         <input
           type={visible ? 'text' : 'password'}
           placeholder="Min 6 characters"
@@ -603,9 +603,9 @@ function PasswordField({ label, field, value, error, focused, visible, setVisibl
           onChange={update(field)}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? errorId : undefined}
-          className="w-full bg-transparent px-3.5 py-3 pr-10 text-sm text-slate-900 outline-none placeholder:text-slate-400"
+          className="w-full bg-transparent px-3.5 py-3 pr-10 text-sm text-ink outline-none placeholder:text-gray-400"
         />
-        <button type="button" onClick={() => setVisible((current) => !current)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600" aria-label={visible ? 'Hide password' : 'Show password'}>
+        <button type="button" onClick={() => setVisible((current) => !current)} className="absolute right-3 top-1/2 -trangray-y-1/2 text-gray-400 hover:text-gray-600" aria-label={visible ? 'Hide password' : 'Show password'}>
           {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
         </button>
       </div>
@@ -617,10 +617,10 @@ function PasswordField({ label, field, value, error, focused, visible, setVisibl
 function ChoiceGroup({ label, value, error, options, onChange }) {
   return (
     <fieldset aria-invalid={Boolean(error)}>
-      <legend className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-700">{label}</legend>
+      <legend className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-700">{label}</legend>
       <div className="grid gap-2 sm:grid-cols-3">
         {options.map((option) => (
-          <button key={option} type="button" onClick={() => onChange(option)} className={`rounded-xl border px-3 py-3 text-sm font-semibold transition-colors ${value === option ? 'border-brand-600 bg-brand-50 text-brand-800' : error ? 'border-red-200 bg-red-50 text-red-700 hover:border-red-300' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'}`}>
+          <button key={option} type="button" onClick={() => onChange(option)} className={`rounded-xl border px-3 py-3 text-sm font-semibold transition-colors ${value === option ? 'border-brand-600 bg-brand-50 text-brand-800' : error ? 'border-red-200 bg-red-50 text-red-700 hover:border-red-300' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'}`}>
             {option}
           </button>
         ))}
