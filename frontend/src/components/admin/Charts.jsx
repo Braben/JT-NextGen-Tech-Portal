@@ -26,9 +26,9 @@ export function LineChart({
 }) {
   if (loading) {
     return (
-      <div className="h-[200px] animate-pulse">
+      <div className="animate-pulse">
         <div className="h-6 w-1/4 bg-gray-200 dark:bg-gray-700 rounded mb-4" />
-        <div className="h-full bg-gray-100 dark:bg-gray-800 rounded" />
+        <div className="bg-gray-100 dark:bg-gray-800 rounded" style={{ height }} />
       </div>
     );
   }
@@ -54,7 +54,7 @@ export function LineChart({
 
   return (
     <div>
-      <div className="relative h-[200px]">
+      <div className="relative min-w-0" style={{ height }}>
         <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
           <defs>
             <linearGradient id="gridGradient" x1="0" y1="0" x2="0" y2="1">
@@ -82,11 +82,11 @@ export function LineChart({
             />
           ))}
         </svg>
-        <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 -mb-2 text-xs text-gray-400">
+      </div>
+      <div className="mt-2 flex justify-between text-xs text-gray-400">
           {labels.map((label, i) => (
             <span key={i} className="flex-1 text-center truncate px-1">{label}</span>
           ))}
-        </div>
       </div>
       {showLegend && data.length > 0 && (
         <div className="flex flex-wrap gap-4 mt-6 justify-center">
@@ -95,7 +95,7 @@ export function LineChart({
             const fallback = ['Applications', 'Approved', 'Enrolled', 'Rejected', 'Series ' + (i + 1)];
             const label = ['Applications', 'Approved', 'Enrolled', 'Rejected'][i] || fallback[i] || `Series ${i + 1}`;
             return (
-              <div key={i} className="flex items-center gap-2">
+              <div key={i} className="flex min-w-0 max-w-full flex-wrap items-center justify-center gap-2">
                 <div className="w-3 h-3 rounded flex-shrink-0" style={{ backgroundColor: colors[i % colors.length] }} />
                 <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{label}</span>
               </div>
@@ -131,13 +131,13 @@ export function DonutChart({
 
   if (total === 0) {
     return (
-      <div className="flex flex-col items-center">
-        <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
-          <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <div className="flex min-w-0 max-w-full flex-col items-center">
+        <div className="relative flex items-center justify-center" style={{ width: size, maxWidth: '100%', aspectRatio: '1 / 1' }}>
+          <svg className="h-full w-full" width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
             <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#e5e7eb" strokeWidth={strokeWidth} />
           </svg>
           {showCenter && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <div className="absolute inset-[18%] text-center flex flex-col items-center justify-center">
               <span className="text-2xl font-bold text-gray-900 dark:text-white">{centerValue ?? '0%'}</span>
               {centerLabel && <span className="text-xs text-gray-500 dark:text-gray-400">{centerLabel}</span>}
             </div>
@@ -148,9 +148,9 @@ export function DonutChart({
   }
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative" style={{ width: size, height: size }}>
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    <div className="flex min-w-0 max-w-full flex-col items-center">
+      <div className="relative" style={{ width: size, maxWidth: '100%', aspectRatio: '1 / 1' }}>
+        <svg className="h-full w-full" width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
           {data.map((segment, i) => {
             const percentage = segment.value / total;
             const strokeDasharray = `${percentage * circumference} ${circumference}`;
@@ -175,7 +175,7 @@ export function DonutChart({
           })}
         </svg>
         {showCenter && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          <div className="absolute inset-[18%] text-center flex flex-col items-center justify-center pointer-events-none">
             <span className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{centerValue ?? `${((data[0]?.value / total) * 100).toFixed(1)}%`}</span>
             {centerLabel && <span className="text-xs text-gray-500 dark:text-gray-400">{centerLabel}</span>}
           </div>
@@ -184,8 +184,8 @@ export function DonutChart({
 
       <div className="mt-4 flex flex-wrap gap-3 justify-center text-sm">
         {data.map((segment, i) => (
-          <div key={segment.label} className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded" style={{ backgroundColor: colors[i % colors.length] }} />
+          <div key={segment.label} className="flex min-w-0 max-w-full flex-wrap items-center justify-center gap-2">
+            <div className="w-3 h-3 shrink-0 rounded" style={{ backgroundColor: colors[i % colors.length] }} />
             <span className="text-gray-600 dark:text-gray-400">{segment.label}</span>
             <span className="font-medium text-gray-900 dark:text-white">{segment.value}</span>
             <span className="text-gray-400">({((segment.value / total) * 100).toFixed(1)}%)</span>

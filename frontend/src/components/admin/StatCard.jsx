@@ -75,11 +75,11 @@ export default function StatCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{label}</p>
+          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</p>
           <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mt-1">{value}</p>
           {subValue !== undefined && (
             <div className="flex flex-wrap items-center gap-2 mt-2">
-              <span className={`text-sm font-medium ${trend === 'up' ? 'text-emerald-600' : trend === 'down' ? 'text-red-600' : 'text-gray-500'}`}>
+              <span className={`inline-flex flex-wrap items-center gap-1 text-sm font-medium ${trend === 'up' ? 'text-emerald-600' : trend === 'down' ? 'text-red-600' : 'text-gray-500'}`}>
                 <TrendIndicator trend={trend} />
                 {subValue}
               </span>

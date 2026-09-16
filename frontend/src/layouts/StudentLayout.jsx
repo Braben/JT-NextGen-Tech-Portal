@@ -17,9 +17,9 @@ export default function StudentLayout() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar isOpen={sidebarOpen} onClose={handleSidebarToggle} onSignOut={logout} />
-      <div className="lg:pl-64 flex flex-col min-h-screen">
+      <div className="lg:pl-64 min-w-0 flex flex-col min-h-screen">
         <Header title={getPageTitle(location.pathname)} subtitle={getPageSubtitle(location.pathname)} onSidebarToggle={handleSidebarToggle} />
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full">
+        <main className="dashboard-content min-w-0 flex-1 p-4 sm:p-6 lg:p-8 w-full">
           <Outlet />
         </main>
       </div>

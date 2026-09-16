@@ -55,7 +55,7 @@ const Button = forwardRef(({
       type={type}
       disabled={isDisabled}
       className={`
-        inline-flex items-center justify-center gap-2 font-medium rounded-lg
+        inline-flex min-w-0 max-w-full items-center justify-center gap-2 font-medium rounded-lg
         transition-all duration-200 ease-in-out
         focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
         disabled:opacity-50 disabled:cursor-not-allowed
@@ -74,10 +74,10 @@ const Button = forwardRef(({
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
         </svg>
       ) : iconNode ? (
-        <span aria-hidden="true" className="inline-flex">{iconNode}</span>
+        <span aria-hidden="true" className="inline-flex shrink-0">{iconNode}</span>
       ) : null}
-      <span>{children}</span>
-      {iconRightNode && !loading && <span aria-hidden="true" className="inline-flex">{iconRightNode}</span>}
+      <span className="min-w-0 [overflow-wrap:anywhere]">{children}</span>
+      {iconRightNode && !loading && <span aria-hidden="true" className="inline-flex shrink-0">{iconRightNode}</span>}
     </motion.button>
   );
 });

@@ -36,7 +36,7 @@ export default function AdminLayout() {
       />
 
       {/* Main content area with sidebar offset on desktop */}
-      <div className="lg:pl-64 flex flex-col min-h-screen">
+      <div className="lg:pl-64 min-w-0 flex flex-col min-h-screen">
         {/* Header with page title, search, notifications, user menu */}
         <Header
           title={getPageTitle(location.pathname)}
@@ -45,7 +45,7 @@ export default function AdminLayout() {
         />
 
         {/* Main content - takes full width and available height */}
-        <main className="admin-content min-w-0 flex-1 p-4 sm:p-6 lg:p-8 w-full">
+        <main className="admin-content dashboard-content min-w-0 flex-1 p-4 sm:p-6 lg:p-8 w-full">
           {/* Outlet renders the child route component */}
           <Outlet />
         </main>

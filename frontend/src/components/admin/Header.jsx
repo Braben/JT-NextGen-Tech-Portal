@@ -143,7 +143,7 @@ export default function Header({ title = 'Admin Dashboard', subtitle = 'Full sys
             </svg>
           </button>
 
-          <div className="hidden sm:block flex-1 max-w-md">
+          <div className="hidden sm:block min-w-0 flex-1 max-w-md">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" aria-hidden="true" />
               <input
@@ -158,8 +158,8 @@ export default function Header({ title = 'Admin Dashboard', subtitle = 'Full sys
           </div>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden sm:flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <div className="hidden xl:flex items-center gap-2">
             <label className="flex items-center gap-2 cursor-pointer">
               <Calendar className="w-4 h-4 text-gray-400" aria-hidden="true" />
               <select
@@ -191,7 +191,7 @@ export default function Header({ title = 'Admin Dashboard', subtitle = 'Full sys
             </button>
 
             {showNotifications && (
-              <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden animate-slide-in-right">
+              <div className="fixed left-4 right-4 top-16 mt-2 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:w-96 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden animate-slide-in-right">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                   <h3 className="font-semibold text-gray-900 dark:text-white">Notifications</h3>
                   <div className="flex items-center gap-3">
@@ -245,7 +245,7 @@ export default function Header({ title = 'Admin Dashboard', subtitle = 'Full sys
             </button>
 
             {showMessages && (
-              <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden animate-slide-in-right">
+              <div className="fixed left-4 right-4 top-16 mt-2 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:w-96 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden animate-slide-in-right">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                   <h3 className="font-semibold text-gray-900 dark:text-white">Messages</h3>
                   <button onClick={() => setShowMessages(false)} className="text-gray-400 hover:text-gray-600" aria-label="Close messages">
@@ -331,7 +331,7 @@ export default function Header({ title = 'Admin Dashboard', subtitle = 'Full sys
         </div>
       </div>
 
-      <div className="lg:hidden border-t border-gray-200 dark:border-gray-700 px-4 py-3">
+      <div className="sm:hidden border-t border-gray-200 dark:border-gray-700 px-4 py-3">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" aria-hidden="true" />
           <input

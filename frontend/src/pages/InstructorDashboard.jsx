@@ -201,14 +201,14 @@ export default function InstructorDashboard() {
         </div>
       </section>
 
-      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {statCards.map(({ key, ...props }) => (
           <StatCard key={key} cardKey={key} {...props} />
         ))}
       </div>
 
-      <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="card lg:col-span-2">
+      <div className="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <div className="card xl:col-span-2">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Submissions Overview</h3>
             <span className="rounded-full border border-brand-100 bg-brand-50 px-2 py-1 text-xs text-brand-700">Next 5 deadlines</span>

@@ -30,7 +30,7 @@ const Card = forwardRef(({
   return (
     <div
       ref={ref}
-      className={`min-w-0 max-w-full break-words ${variantClasses[variant]} ${paddingClasses[padding]} ${className}`}
+      className={`min-w-0 max-w-full [overflow-wrap:anywhere] ${variantClasses[variant]} ${paddingClasses[padding]} ${className}`}
       {...props}
     >
       {children}

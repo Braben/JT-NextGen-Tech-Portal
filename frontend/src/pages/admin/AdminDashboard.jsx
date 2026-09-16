@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { adminAPI, attendanceAPI, eventAPI, materialAPI, enrollmentAPI, classAPI, messageAPI, programAPI } from '../../api';
+import { adminAPI, attendanceAPI, eventAPI, materialAPI, enrollmentAPI, classAPI, messageAPI, programAPI, systemAPI } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import StatCard from '../../components/admin/StatCard';
 import { LineChart, DonutChart, StatRow } from '../../components/admin/Charts';
@@ -51,7 +51,7 @@ export default function AdminDashboard() {
       programAPI.getAll(),
       adminAPI.getEnrollments(),
       materialAPI.getAll(),
-      fetch('/api/health').then((response) => response.ok ? response.json() : Promise.reject(new Error('Health check failed'))),
+      systemAPI.health().then((response) => response.data),
       adminAPI.getAuditLog({ limit: 8 }),
       classAPI.getAll(),
       messageAPI.getConversations(),

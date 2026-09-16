@@ -168,14 +168,14 @@ export default function StudentDashboard() {
         </div>
       </section>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
         {statCards.map(({ key, ...props }) => (
           <StatCard key={key} cardKey={key} {...props} />
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div className="lg:col-span-2 card">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+        <div className="xl:col-span-2 card">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Score Trend</h3>
             <span className="text-xs px-2 py-1 rounded-full bg-brand-50 text-brand-700 border border-brand-100">Last 5 graded</span>
