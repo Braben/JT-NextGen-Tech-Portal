@@ -39,7 +39,7 @@ export default function Blog() {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {posts.map((p, i) => (
                 <motion.div key={p.id} {...fadeUp} transition={{ delay: i * 0.05 }}>
-                  <Link to={`/blog/${p.slug}`} className="block bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md hover:border-brand-200 transition-all group">
+                  <Link to={`/blog/${p.slug}`} className="accent-card block bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md hover:border-brand-200 transition-all group">
                     <div className="h-44 bg-gradient-to-br from-brand-600 to-brand-800 flex items-center justify-center overflow-hidden">
                       {p.cover_image ? (
                         <img src={p.cover_image} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />

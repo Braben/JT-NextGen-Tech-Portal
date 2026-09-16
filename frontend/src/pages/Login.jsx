@@ -86,7 +86,7 @@ export default function Login() {
                 { icon: Users, title: '4.9/5 Rating', sub: 'From 3k reviews' },
                 { icon: ShieldCheck, title: 'Certificate', sub: 'Verified & shareable' },
               ].map((f) => (
-                <div key={f.title} className="rounded-2xl bg-white/[0.06] border border-white/[0.08] backdrop-blur p-4">
+                <div key={f.title} className="accent-card rounded-2xl bg-white/[0.06] border border-white/[0.08] backdrop-blur p-4">
                   <f.icon className="w-5 h-5 text-brand-400 mb-3" />
                   <div className="text-sm font-semibold text-white leading-none">{f.title}</div>
                   <div className="text-xs text-white/50 mt-1">{f.sub}</div>
@@ -117,7 +117,7 @@ export default function Login() {
 
             <div className="relative">
               <div className="absolute -inset-[1px] rounded-[26px] bg-gradient-to-br from-brand-500/30 via-white/10 to-transparent opacity-60 blur-[0.5px]" />
-              <div className="relative rounded-[24px] bg-surface backdrop-blur-xl border border-white/60 shadow-[0_20px_60px_rgba(0,0,0,0.35),0_1px_0_rgba(255,255,255,0.6)_inset] overflow-hidden">
+              <div className="accent-card relative rounded-[24px] bg-surface backdrop-blur-xl border border-white/60 shadow-[0_20px_60px_rgba(0,0,0,0.35),0_1px_0_rgba(255,255,255,0.6)_inset] overflow-hidden">
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent opacity-70" />
                 <div className="absolute -top-24 -right-24 w-56 h-56 bg-brand-500/10 rounded-full blur-2xl" />
                 <div className="absolute -bottom-20 -left-20 w-56 h-56 bg-emerald-500/10 rounded-full blur-2xl" />
@@ -202,7 +202,7 @@ export default function Login() {
                         { id: 'instructor', label: 'Instructor', sub: 'Teach & grade', color: 'from-brand-500 to-emerald-500' },
                         { id: 'student', label: 'Student', sub: 'Learn & submit', color: 'from-sky-500 to-indigo-500' },
                       ].map((r) => (
-                        <button key={r.id} onClick={()=>fillDemo(r.id)} className="group relative rounded-2xl border border-gray-100 bg-page hover:bg-white hover:border-gray-200 hover:shadow-md p-3 text-left transition-all">
+                        <button key={r.id} onClick={()=>fillDemo(r.id)} className="accent-card group relative rounded-2xl border border-gray-100 bg-page hover:bg-white hover:border-gray-200 hover:shadow-md p-3 text-left transition-all">
                           <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${r.color} flex items-center justify-center text-white shadow-sm`}>
                             {r.id==='admin' ? <ShieldCheck className="w-4 h-4" /> : r.id==='instructor' ? <Layers className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
                           </div>

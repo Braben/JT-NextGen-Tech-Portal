@@ -33,7 +33,7 @@ export default function VerifyCertificate() {
           <p className="mt-4 text-gray-600 dark:text-gray-400">Verify the authenticity of a JT NextGen Tech Hub certificate.</p>
         </motion.div>
         <motion.form onSubmit={handleSubmit} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
-          className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm mb-10">
+          className="accent-card bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm mb-10">
           <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Certificate Serial Number</label>
           <input type="text" placeholder="e.g. JTNG-0001" value={serial} onChange={(e) => setSerial(e.target.value)} required className="input-field mb-4" />
           <motion.button type="submit" disabled={loading} className="btn-primary w-full py-3" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>

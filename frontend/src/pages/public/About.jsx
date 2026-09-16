@@ -31,7 +31,7 @@ export default function About() {
             </div>
           </motion.div>
           <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}
-            className="bg-page border border-gray-200 dark:border-gray-700 rounded-3xl p-8">
+            className="accent-card bg-page border border-gray-200 dark:border-gray-700 rounded-3xl p-8">
             <div className="grid grid-cols-2 gap-4">
               {['Our Vision', 'Our Mission', 'Our Objective'].map((title, i) => (
                 <motion.div key={i} whileHover={{ y: -4 }} className={`bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm ${i === 2 ? 'col-span-2' : ''}`}>

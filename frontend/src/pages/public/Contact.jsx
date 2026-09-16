@@ -57,13 +57,13 @@ export default function Contact() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 pb-16">
         <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-6 items-start">
-          <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+          <div className="accent-card rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
             <h2 className="text-lg font-bold text-navy-900">Contact Information</h2>
             <p className="mt-1 text-sm text-gray-500">Choose the channel that works best for you.</p>
 
             <div className="mt-6 space-y-4">
               {contactMethods.map((item) => (
-                <div key={item.label} className="flex gap-3 rounded-xl border border-gray-100 bg-gray-50 p-4">
+                <div key={item.label} className="accent-card flex gap-3 rounded-xl border border-gray-100 bg-gray-50 p-4">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-100 text-brand-700">
                     <item.icon className="h-5 w-5" />
                   </div>
@@ -87,7 +87,7 @@ export default function Contact() {
             </a>
           </div>
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-6 sm:p-7 shadow-sm">
+          <div className="accent-card rounded-2xl border border-gray-100 bg-white p-6 sm:p-7 shadow-sm">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-lg font-bold text-navy-900">Send a Message</h2>

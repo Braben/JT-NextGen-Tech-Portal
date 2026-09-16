@@ -213,7 +213,7 @@ export default function Quizzes() {
 
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-10 pb-10 overflow-y-auto" onClick={() => setShowModal(false)}>
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 p-6" onClick={(e) => e.stopPropagation()}>
+          <div className="accent-card bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-gray-900">Create Quiz</h2>
               <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">

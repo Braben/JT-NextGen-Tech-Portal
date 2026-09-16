@@ -43,7 +43,7 @@ export default function ResetPassword() {
         <motion.div initial={{ opacity: 0, y: 18, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.55 }} className="w-full max-w-[420px]">
           <div className="relative">
             <div className="absolute -inset-[1px] rounded-[26px] bg-gradient-to-br from-brand-500/30 via-white/10 to-transparent opacity-60" />
-            <div className="relative rounded-[24px] bg-surface backdrop-blur-xl border border-white/60 shadow-[0_20px_60px_rgba(0,0,0,0.35)] overflow-hidden">
+            <div className="accent-card relative rounded-[24px] bg-surface backdrop-blur-xl border border-white/60 shadow-[0_20px_60px_rgba(0,0,0,0.35)] overflow-hidden">
               <div className="p-7 sm:p-8">
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-50 border border-brand-100 text-[11px] font-semibold tracking-wide text-brand-700"><Sparkles className="w-3 h-3" /> RESET PASSWORD</div>
                 <h1 className="text-[22px] font-black tracking-tight text-gray-900 mt-3 leading-none">Set new password</h1>

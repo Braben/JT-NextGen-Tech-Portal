@@ -41,7 +41,7 @@ export default function BlogPost() {
             Back to Blog
           </Link>
 
-          <motion.article initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+          <motion.article initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="accent-card bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
             {post.cover_image ? (
               <img src={post.cover_image} alt={post.title} className="w-full h-64 md:h-80 object-cover" />
             ) : (

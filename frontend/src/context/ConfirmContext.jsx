@@ -35,7 +35,7 @@ export function ConfirmProvider({ children }) {
       {state && (
         <div className="fixed inset-0 z-[9998] flex items-center justify-center p-4 bg-black/50" onClick={() => handleClose(false)}>
           <div
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-sm w-full p-6 animate-slide-in-up"
+            className="accent-card bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-sm w-full p-6 animate-slide-in-up"
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"

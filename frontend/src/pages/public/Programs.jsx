@@ -28,7 +28,7 @@ export default function Programs() {
           viewport={{ once: true, margin: '-40px' }} className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {programs.map((p) => (
             <motion.div key={p.id} variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}>
-              <Link to={`/programs/${p.slug}`} className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:-translate-y-1 hover:shadow-lg transition-all duration-300 p-6 border-t-4 border-brand-600 group block">
+              <Link to={`/programs/${p.slug}`} className="accent-card bg-white dark:bg-gray-800 rounded-xl shadow-md hover:-translate-y-1 hover:shadow-lg transition-all duration-300 p-6 border-t-4 border-brand-600 group block">
                 <h3 className="text-xl font-semibold text-brand-800 mb-2 group-hover:text-brand-600 transition-colors">{p.title}</h3>
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">{p.description}</p>
                 <div className="flex flex-wrap gap-2 text-xs text-gray-500 dark:text-gray-400 mb-3">

@@ -317,7 +317,7 @@ export default function Register() {
           <motion.section initial={{ opacity: 0, y: 18, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.55 }} className="w-full">
             <div className="relative mx-auto max-w-[760px]">
               <div className="absolute -inset-[1px] rounded-[28px] bg-gradient-to-br from-brand-500/30 via-white/10 to-transparent opacity-70" />
-              <div className="relative overflow-hidden rounded-[26px] border border-white/60 bg-white shadow-[0_20px_60px_rgba(0,0,0,0.35),0_1px_0_rgba(255,255,255,0.6)_inset]">
+              <div className="accent-card relative overflow-hidden rounded-[26px] border border-white/60 bg-white shadow-[0_20px_60px_rgba(0,0,0,0.35),0_1px_0_rgba(255,255,255,0.6)_inset]">
                 <div className="border-b border-gray-100 px-5 py-5 sm:px-7">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>

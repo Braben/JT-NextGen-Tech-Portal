@@ -201,7 +201,7 @@ export function StatRow({ stats, loading = false }) {
     return (
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-3 sm:p-4 animate-pulse">
+          <div key={i} className="accent-card rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-3 sm:p-4 animate-pulse">
             <div className="h-3 w-1/2 bg-gray-200 dark:bg-gray-700 rounded mb-2 mx-auto" />
             <div className="h-6 w-3/4 bg-gray-200 dark:bg-gray-700 rounded mx-auto" />
           </div>
@@ -213,7 +213,7 @@ export function StatRow({ stats, loading = false }) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
       {stats.map((stat, i) => (
-        <div key={i} className="rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-3 sm:p-4 text-center">
+        <div key={i} className="accent-card rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-3 sm:p-4 text-center">
           <div className="flex items-center justify-center gap-1.5 mb-1">
             {stat.trend === 'up' && <TrendingUp className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />}
             {stat.trend === 'down' && <TrendingDown className="w-3.5 h-3.5 text-red-500 flex-shrink-0" />}

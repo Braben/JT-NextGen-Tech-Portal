@@ -151,7 +151,7 @@ function ProgramsSection({ programs }) {
 
         <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }} className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {(programs.length ? programs : Array.from({ length: 6 }).map((_,i)=>({ id:`skeleton-${i}`, title: 'Loading…', description: 'Fetching programs', duration: '—', level: '—', slug: '#' })) ).map((p,i)=>(
-            <motion.div key={p.id} custom={i} variants={fadeUp} whileHover={{ y: -6, scale: 1.01 }} whileTap={{ scale: 0.98 }} transition={{ type: 'spring', stiffness: 350, damping: 22 }} className="group relative rounded-[20px] bg-white border border-gray-100 p-6 shadow-[0_8px_24px_rgba(16,42,67,0.06)] hover:shadow-[0_16px_40px_rgba(16,42,67,0.10)] hover:border-brand-200">
+            <motion.div key={p.id} custom={i} variants={fadeUp} whileHover={{ y: -6, scale: 1.01 }} whileTap={{ scale: 0.98 }} transition={{ type: 'spring', stiffness: 350, damping: 22 }} className="accent-card group relative rounded-[20px] bg-white border border-gray-100 p-6 shadow-[0_8px_24px_rgba(16,42,67,0.06)] hover:shadow-[0_16px_40px_rgba(16,42,67,0.10)] hover:border-brand-200">
               <motion.div whileHover={{ rotate: 8, scale: 1.08 }} className="absolute top-6 right-6 w-8 h-8 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400 group-hover:bg-brand-600 group-hover:text-white group-hover:border-brand-600 transition-colors"><ArrowRight className="w-4 h-4" /></motion.div>
               <motion.div whileHover={{ scale: 1.05 }} className="w-10 h-10 rounded-xl bg-navy-900 text-white flex items-center justify-center"><BookOpen className="w-5 h-5" /></motion.div>
               <h3 className="mt-4 pr-10 text-[16px] font-bold leading-tight text-navy-900 group-hover:text-brand-700 transition-colors line-clamp-2">{p.title}</h3>
@@ -189,7 +189,7 @@ function ValueSection() {
         </motion.div>
         <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }} className="mt-8 grid gap-6 md:grid-cols-3">
           {items.map((it, i)=>(
-            <motion.div key={it.title} custom={i} variants={fadeUp} whileHover={{ y: -6, scale: 1.01 }} whileTap={{ scale: 0.99 }} className="rounded-[20px] border border-gray-100 bg-page p-6 hover:bg-white hover:shadow-[0_16px_40px_rgba(16,42,67,0.08)] hover:border-gray-200 group">
+            <motion.div key={it.title} custom={i} variants={fadeUp} whileHover={{ y: -6, scale: 1.01 }} whileTap={{ scale: 0.99 }} className="accent-card rounded-[20px] border border-gray-100 bg-page p-6 hover:bg-white hover:shadow-[0_16px_40px_rgba(16,42,67,0.08)] hover:border-gray-200 group">
               <motion.div whileHover={{ rotate: 5, scale: 1.06 }} className={`w-11 h-11 rounded-xl bg-gradient-to-br ${it.gradient} flex items-center justify-center text-white shadow-sm`}><it.icon className="w-5 h-5" /></motion.div>
               <h3 className="mt-4 text-[16px] font-bold text-navy-900">{it.title}</h3>
               <p className="mt-2 text-[13px] leading-5 text-gray-500">{it.text}</p>
@@ -216,7 +216,7 @@ function EventsSection({ events }) {
         </motion.div>
         <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {events.slice(0,6).map((ev,i)=>(
-            <motion.div key={ev.id} custom={i} variants={fadeUp} whileHover={{ y: -3, scale: 1.01 }} className="rounded-[16px] border border-gray-100 bg-page p-4 flex gap-3.5 hover:bg-white hover:shadow-sm hover:border-gray-200">
+            <motion.div key={ev.id} custom={i} variants={fadeUp} whileHover={{ y: -3, scale: 1.01 }} className="accent-card rounded-[16px] border border-gray-100 bg-page p-4 flex gap-3.5 hover:bg-white hover:shadow-sm hover:border-gray-200">
               <div className="shrink-0 w-[56px] h-[56px] rounded-xl bg-navy-900 text-white flex flex-col items-center justify-center leading-none">
                 <span className="text-[18px] font-extrabold">{new Date(ev.event_date).getDate()}</span>
                 <span className="text-[10px] tracking-widest font-semibold opacity-80">{new Date(ev.event_date).toLocaleString('en', { month:'short' }).toUpperCase()}</span>
@@ -249,7 +249,7 @@ function BlogSection({ blogs }) {
         <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid gap-6 md:grid-cols-3">
           {blogs.map((p,i)=>(
             <motion.div key={p.id} custom={i} variants={fadeUp} whileHover={{ y: -5 }} className="group">
-              <Link to={`/blog/${p.slug}`} className="cursor-pointer block rounded-[20px] overflow-hidden bg-white border border-gray-100 hover:border-gray-200 hover:shadow-[0_16px_40px_rgba(16,42,67,0.08)] transition-all">
+              <Link to={`/blog/${p.slug}`} className="accent-card cursor-pointer block rounded-[20px] overflow-hidden bg-white border border-gray-100 hover:border-gray-200 hover:shadow-[0_16px_40px_rgba(16,42,67,0.08)] transition-all">
                 <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.4 }} className="h-44 bg-gradient-to-br from-navy-900 via-navy-800 to-brand-700 relative overflow-hidden">
                   {p.cover_image ? <img src={p.cover_image} alt={p.title} className="w-full h-full object-cover" /> : <div className="absolute inset-0 flex items-center justify-center"><span className="text-white/20 text-5xl font-black">JT</span></div>}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
@@ -294,7 +294,7 @@ function TestimonialsSection({ testimonials = fallbackTestimonials }) {
           <p className="mt-3 text-sm leading-6 text-white/60">Verified learners — photo, name, role and outcome. No stock quotes.</p>
         </div>
 
-        <div className="mt-8 relative rounded-[20px] bg-white/10 backdrop-blur border border-white/10 p-6 sm:p-8 lg:p-10" onMouseEnter={()=>setPaused(true)} onMouseLeave={()=>setPaused(false)} onFocus={()=>setPaused(true)} onBlur={()=>setPaused(false)} ref={regionRef} role="region" aria-roledescription="carousel" aria-label="Testimonials">
+        <div className="accent-card mt-8 relative rounded-[20px] bg-white/10 backdrop-blur border border-white/10 p-6 sm:p-8 lg:p-10" onMouseEnter={()=>setPaused(true)} onMouseLeave={()=>setPaused(false)} onFocus={()=>setPaused(true)} onBlur={()=>setPaused(false)} ref={regionRef} role="region" aria-roledescription="carousel" aria-label="Testimonials">
           <div className="absolute top-4 right-4 hidden sm:flex items-center gap-2">
             <button onClick={()=>go('prev')} aria-label="Previous testimonial" className="cursor-pointer w-8 h-8 rounded-full bg-white/10 hover:bg-white/15 border border-white/10 flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"><ChevronLeft className="w-4 h-4" /></button>
             <button onClick={()=>go('next')} aria-label="Next testimonial" className="cursor-pointer w-8 h-8 rounded-full bg-white text-navy-900 hover:bg-gray-100 flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"><ChevronRight className="w-4 h-4" /></button>

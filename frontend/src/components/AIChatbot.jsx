@@ -99,7 +99,7 @@ export default function AIChatbot({ assignmentId, assignmentTitle, mode = 'stude
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 18, scale: 0.98 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-20 right-4 z-50 flex h-[620px] max-h-[calc(100vh-7rem)] w-[390px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+            className="accent-card fixed bottom-20 right-4 z-50 flex h-[620px] max-h-[calc(100vh-7rem)] w-[390px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
           >
             <header className="bg-[#07111f] px-5 py-4 text-white">
               <div className="flex items-start justify-between gap-3">
@@ -153,7 +153,7 @@ export default function AIChatbot({ assignmentId, assignmentTitle, mode = 'stude
 
                 {loading && (
                   <div className="flex justify-start">
-                    <div className="rounded-2xl rounded-bl-md border border-slate-200 bg-white px-5 py-4 shadow-sm">
+                    <div className="accent-card rounded-2xl rounded-bl-md border border-slate-200 bg-white px-5 py-4 shadow-sm">
                       <div className="flex items-center gap-2" aria-label="JTutor is thinking">
                         <span className="h-2 w-2 animate-bounce rounded-full bg-brand-400" />
                         <span className="h-2 w-2 animate-bounce rounded-full bg-brand-500 [animation-delay:150ms]" />

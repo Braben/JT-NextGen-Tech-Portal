@@ -320,3 +320,25 @@
 .public-content { color: rgb(var(--ink)); background-color: rgb(var(--page)); }
 .public-content .text-gray-400 { color: rgb(var(--field-placeholder)); }
 .dark .public-content :is(.bg-gray-50\/60, .bg-white\/80, .bg-white\/90) { background-color: rgb(var(--surface)); }
+
+/* Decorative accents stay at the edges, never behind labels or body copy.
+   Compose with Tailwind's ring and elevation shadows to preserve focus states. */
+:is(.card, .accent-card) {
+  box-shadow: inset 3px 0 0 rgb(var(--accent)),
+    var(--tw-ring-offset-shadow, 0 0 #0000),
+    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow, 0 0 #0000);
+}
+:is(button, [role="button"], .btn-primary, .btn-secondary, .btn-danger, a[class*="rounded"][class*="bg-"]) {
+  box-shadow: inset 0 -2px 0 rgb(var(--accent)),
+    var(--tw-ring-offset-shadow, 0 0 #0000),
+    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow, 0 0 #0000);
+}
+/* A button that is itself a card keeps both small edge accents. */
+button:is(.card, .accent-card) {
+  box-shadow: inset 3px 0 0 rgb(var(--accent)), inset 0 -2px 0 rgb(var(--accent)),
+    var(--tw-ring-offset-shadow, 0 0 #0000),
+    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow, 0 0 #0000);
+}
+@media print {
+  :is(.card, .accent-card, button, [role="button"]) { box-shadow: none; }
+}

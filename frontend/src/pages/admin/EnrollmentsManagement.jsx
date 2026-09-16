@@ -470,7 +470,7 @@ export default function EnrollmentsManagement() {
                       <AssessmentAnswer label="Weakness Impact and Response" value={viewingEnrollment.weakness_response} />
                       <AssessmentAnswer label="Improvement Plan" value={viewingEnrollment.improvement_plan} />
 
-                      <form onSubmit={submitAssessmentGrade} className="rounded-xl bg-gray-50 dark:bg-gray-800/50 p-4">
+                      <form onSubmit={submitAssessmentGrade} className="accent-card rounded-xl bg-gray-50 dark:bg-gray-800/50 p-4">
                         <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_1.4fr] gap-3">
                           <label>
                             <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Score</span>
