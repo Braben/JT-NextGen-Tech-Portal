@@ -119,9 +119,9 @@ export default function SystemManagement() {
 
       {/* Overall Status */}
       <Card className="mb-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${health?.status === 'ok' ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+            <div className={`w-12 h-12 shrink-0 rounded-xl flex items-center justify-center ${health?.status === 'ok' ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
               {health?.status === 'ok' ? <CheckCircle className="w-6 h-6 text-emerald-600" /> : <XCircle className="w-6 h-6 text-red-600" />}
             </div>
             <div>
@@ -129,9 +129,9 @@ export default function SystemManagement() {
               <p className="text-gray-500 dark:text-gray-400">System Status</p>
             </div>
           </div>
-          <div className="text-right">
+          <div className="text-left sm:text-right">
             <p className="text-sm text-gray-500 dark:text-gray-400">Uptime</p>
-            <p className="text-xl font-bold text-gray-900 dark:text-white font-mono">{health?.uptimeSeconds ? formatUptime(health.uptimeSeconds) : '—'}</p>
+            <p className="text-xl font-bold text-gray-900 dark:text-white font-mono whitespace-nowrap">{health?.uptimeSeconds ? formatUptime(health.uptimeSeconds) : '—'}</p>
           </div>
         </div>
       </Card>

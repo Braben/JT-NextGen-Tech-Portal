@@ -251,7 +251,7 @@ export default function Register() {
         },
       });
       try { sessionStorage.removeItem(storageKey); } catch { /* Registration already succeeded. */ }
-      navigate('/student');
+      navigate('/register/submitted', { replace: true, state: { applicationSubmitted: true } });
     } catch (err) {
       const response = err.response?.data || {};
       const serverFieldErrors = Object.entries(response.fieldErrors || {}).reduce((mapped, [field, message]) => {

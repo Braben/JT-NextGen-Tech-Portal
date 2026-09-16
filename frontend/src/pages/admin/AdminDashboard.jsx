@@ -138,7 +138,7 @@ export default function AdminDashboard() {
           <h1 className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">Admin Dashboard</h1>
           <p className="mt-1 text-gray-500 dark:text-gray-400">Admissions, delivery, communication, and system health from one command view.</p>
         </div>
-        <div className="flex flex-col gap-2 sm:flex-row">
+        <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:flex-wrap">
           <Button variant="outline" onClick={fetchDashboardData} icon={RefreshCcw}>Refresh</Button>
           <Button onClick={() => navigate(nextAction.href)} icon={nextAction.icon}>{nextAction.label}</Button>
         </div>
@@ -155,7 +155,7 @@ export default function AdminDashboard() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Next Best Action</p>
-            <h2 className="mt-1 truncate text-lg font-semibold text-gray-900 dark:text-white">{nextAction.title}</h2>
+            <h2 className="mt-1 break-words text-lg font-semibold text-gray-900 dark:text-white">{nextAction.title}</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">{nextAction.detail}</p>
           </div>
           <div className="grid grid-cols-3 gap-3 sm:min-w-[320px]">

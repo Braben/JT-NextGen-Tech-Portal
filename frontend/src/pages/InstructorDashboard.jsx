@@ -177,7 +177,7 @@ export default function InstructorDashboard() {
           <h1 className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">Instructor Dashboard</h1>
           <p className="mt-1 text-gray-500 dark:text-gray-400">Review teaching priorities, classes, feedback, and attendance from one workspace.</p>
         </div>
-        <div className="flex flex-col gap-2 sm:flex-row">
+        <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:flex-wrap">
           <Button variant="outline" onClick={fetchData} icon={RefreshCcw}>Refresh</Button>
           <Button onClick={() => navigate(nextAction.href)} icon={nextAction.icon}>{nextAction.label}</Button>
         </div>
@@ -194,7 +194,7 @@ export default function InstructorDashboard() {
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Next Best Action</p>
-            <h2 className="mt-1 truncate text-lg font-semibold text-gray-900 dark:text-white">{nextAction.title}</h2>
+            <h2 className="mt-1 break-words text-lg font-semibold text-gray-900 dark:text-white">{nextAction.title}</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">{nextAction.detail}</p>
           </div>
           <Button onClick={() => navigate(nextAction.href)} icon={nextAction.icon}>{nextAction.label}</Button>
@@ -259,7 +259,7 @@ export default function InstructorDashboard() {
                     <p className="mt-1 truncate text-xs text-gray-500">{item.program_title}</p>
                     <p className="mt-1 text-xs text-gray-500">{Number(item.active_count || 0)} active students</p>
                   </div>
-                  <span className={`w-fit rounded-full px-2 py-0.5 text-xs font-semibold capitalize ${item.status === 'active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300'}`}>{item.status}</span>
+                  <span className={`w-fit shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold capitalize ${item.status === 'active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300'}`}>{item.status}</span>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button type="button" onClick={() => navigate('/instructor/classes')} className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-brand-700 hover:bg-brand-50 dark:text-brand-300 dark:hover:bg-brand-500/10">

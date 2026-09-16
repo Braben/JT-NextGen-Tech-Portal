@@ -103,7 +103,7 @@ export default function Modal({
             <motion.div
               ref={modalRef}
               tabIndex={-1}
-              className={`w-full ${sizeClasses[size]} bg-white dark:bg-gray-800 rounded-xl shadow-2xl transform max-h-[90vh] overflow-y-auto relative`}
+              className={`dashboard-content min-w-0 w-full ${sizeClasses[size]} bg-white dark:bg-gray-800 rounded-xl shadow-2xl transform max-h-[90vh] overflow-y-auto relative`}
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}

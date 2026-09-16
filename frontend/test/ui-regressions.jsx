@@ -8,6 +8,7 @@ import { ToastProvider } from '../src/context/ToastContext';
 import { AuthProvider } from '../src/context/AuthContext';
 import { authAPI, programAPI, systemAPI, adminAPI, enrollmentAPI, classAPI } from '../src/api';
 import Register from '../src/pages/public/Register';
+import ApplicationSubmitted from '../src/pages/public/ApplicationSubmitted';
 import SystemManagement from '../src/pages/admin/SystemManagement';
 import EnrollmentsManagement from '../src/pages/admin/EnrollmentsManagement';
 import '../src/index.css';
@@ -27,7 +28,7 @@ function Submitted() {
     }
     if (savedDraft !== null) sessionStorage.setItem('jtng.registrationDraft.v2', savedDraft);
   }, []);
-  return <h1>Application submitted successfully</h1>;
+  return <ApplicationSubmitted />;
 }
 let healthCalls = 0;
 systemAPI.health = async () => {
@@ -82,10 +83,11 @@ function ModalFixture() {
 
 createRoot(document.getElementById('root')).render(
   <ToastProvider>
-    {mode === 'enrollment' ? <MemoryRouter><EnrollmentsManagement /></MemoryRouter> : mode === 'modal' ? <ModalFixture /> : ['register', 'program-failure'].includes(mode) ?
+    {mode === 'submitted' ? <MemoryRouter initialEntries={[{ pathname: '/register/submitted', state: { applicationSubmitted: true } }]}><ApplicationSubmitted /></MemoryRouter> : mode === 'enrollment' ? <MemoryRouter><EnrollmentsManagement /></MemoryRouter> : mode === 'modal' ? <ModalFixture /> : ['register', 'program-failure'].includes(mode) ?
       <AuthProvider><MemoryRouter initialEntries={['/register/account']}><Routes>
         <Route path="/register/:page" element={<Register />} />
-        <Route path="/student" element={<Submitted />} />
+        <Route path="/register/submitted" element={<Submitted />} />
+        <Route path="/student" element={<h1>Student dashboard</h1>} />
       </Routes></MemoryRouter></AuthProvider> : <SystemManagement />}
   </ToastProvider>
 );

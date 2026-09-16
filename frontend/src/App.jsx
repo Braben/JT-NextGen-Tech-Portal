@@ -30,6 +30,7 @@ const ProgramDetail        = lazy(() => import('./pages/public/ProgramDetail'));
 const Contact              = lazy(() => import('./pages/public/Contact'));
 const VerifyCertificate    = lazy(() => import('./pages/public/VerifyCertificate'));
 const PublicRegister       = lazy(() => import('./pages/public/Register'));
+const ApplicationSubmitted = lazy(() => import('./pages/public/ApplicationSubmitted'));
 const Blog                 = lazy(() => import('./pages/public/Blog'));
 const BlogPost             = lazy(() => import('./pages/public/BlogPost'));
 const Login                = lazy(() => import('./pages/Login'));
@@ -126,6 +127,7 @@ export default function App() {
           <Route path="/verify-certificate" element={<Navigate to="/certificates/verify" replace />} />
           <Route path="/register" element={<Navigate to="/register/account" replace />} />
           <Route path="/register/:page" element={<PublicRegister />} />
+          <Route path="/register/submitted" element={<ProtectedRoute role="student"><ApplicationSubmitted /></ProtectedRoute>} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />

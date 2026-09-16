@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { assignmentAPI, submissionAPI, gradebookAPI, enrollmentAPI, materialAPI, quizAPI, attendanceAPI } from '../api';
+import { assignmentAPI, submissionAPI, gradebookAPI, enrollmentAPI, materialAPI, quizAPI, attendanceAPI, onboardingAPI } from '../api';
+import { getAdmissionsNotices } from '../utils/admissionsStatus';
 import { useAuth } from '../context/AuthContext';
 import StatCard from '../components/admin/StatCard';
 import { LineChart, DonutChart } from '../components/admin/Charts';
@@ -17,6 +18,7 @@ export default function StudentDashboard() {
   const [mySubmissions, setMySubmissions] = useState([]);
   const [stats, setStats] = useState(null);
   const [enrollments, setEnrollments] = useState([]);
+  const [assessments, setAssessments] = useState([]);
   const [attendanceSummary, setAttendanceSummary] = useState(null);
   const [materialsCount, setMaterialsCount] = useState(0);
   const [quizzesCount, setQuizzesCount] = useState(0);
@@ -33,9 +35,11 @@ export default function StudentDashboard() {
       materialAPI.getAll(),
       quizAPI.getAll({ all: 'true' }),
       attendanceAPI.getSummary(),
+      onboardingAPI.my(),
     ]);
 
-    const [aRes, sRes, gRes, eRes, mRes, qRes, atRes] = results;
+    const [aRes, sRes, gRes, eRes, mRes, qRes, atRes, oaRes] = results;
+    setAssessments(oaRes.status === 'fulfilled' ? oaRes.value.data || [] : []);
     if (aRes.status === 'fulfilled') setAssignments(aRes.value.data || []);
     if (sRes.status === 'fulfilled') setMySubmissions(sRes.value.data || []);
     if (gRes.status === 'fulfilled') setStats(gRes.value.data || null);
@@ -44,7 +48,7 @@ export default function StudentDashboard() {
     if (qRes.status === 'fulfilled') setQuizzesCount((qRes.value.data || []).length);
     if (atRes.status === 'fulfilled') setAttendanceSummary(atRes.value.data || null);
 
-    const labels = ['assignments', 'submissions', 'grades', 'programmes', 'materials', 'quizzes', 'attendance'];
+    const labels = ['assignments', 'submissions', 'grades', 'programmes', 'materials', 'quizzes', 'attendance', 'aptitude status'];
     setLoadErrors(results
       .map((result, index) => result.status === 'rejected' ? labels[index] : null)
       .filter(Boolean));
@@ -73,7 +77,10 @@ export default function StudentDashboard() {
     .sort((a, b) => new Date(a.due_date || '2999-12-31') - new Date(b.due_date || '2999-12-31'));
   const nextAssignment = pendingAssignments[0];
   const activeEnrollment = enrollments.find((item) => item.status === 'active') || enrollments[0];
-  const nextAction = nextAssignment
+  const admissionsUnavailable = loadErrors.includes('programmes') || loadErrors.includes('aptitude status');
+  const admissionsNotices = admissionsUnavailable ? [] : getAdmissionsNotices(enrollments, assessments);
+  const admissionAction = admissionsNotices.find((item) => item.label === 'Open aptitude test') || admissionsNotices[0];
+  const nextAction = admissionAction ? { ...admissionAction, icon: MessageSquare } : nextAssignment
     ? { title: nextAssignment.title, detail: nextAssignment.due_date ? `Due ${new Date(nextAssignment.due_date).toLocaleDateString()}` : 'No deadline set', href: `/student/submit/${nextAssignment.id}`, label: 'Submit Assignment', icon: Send }
     : activeEnrollment?.class_forum_category_id
       ? { title: activeEnrollment.class_name || activeEnrollment.program_title, detail: 'Join your class discussion', href: `/student/forums/${activeEnrollment.class_forum_category_id}`, label: 'Open Discussion', icon: MessageSquare }
@@ -144,7 +151,7 @@ export default function StudentDashboard() {
           <h1 className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">Student Dashboard</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">Today's priorities, class context, and learning progress in one place.</p>
         </div>
-        <div className="flex flex-col gap-2 sm:flex-row">
+        <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:flex-wrap">
           <Button variant="outline" onClick={fetchData} icon={RefreshCcw}>Refresh</Button>
           <Button onClick={() => navigate(nextAction.href)} icon={nextAction.icon}>{nextAction.label}</Button>
         </div>
@@ -157,16 +164,34 @@ export default function StudentDashboard() {
         </div>
       )}
 
-      <section className="card mb-6 border-l-4 border-l-brand-500">
+      {admissionsUnavailable && (
+        <section className="card mb-6" role="status">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Application status unavailable</h2>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">We could not check your current application or aptitude test status. Please refresh to try again, or <Link to="/contact" className="font-semibold text-brand-600 underline dark:text-brand-300">contact admin</Link>.</p>
+        </section>
+      )}
+      {admissionsNotices.map((notice) => (
+        <section key={notice.id} className="card mb-6 border-l-4 border-l-brand-500" aria-label={`Application status: ${notice.program || 'program'}`}>
+          <p className="text-sm font-medium text-brand-700 dark:text-brand-300">{notice.program}</p>
+          <h2 className="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{notice.title}</h2>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{notice.detail}</p>
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+            <Button onClick={() => navigate(notice.href)}>{notice.label}</Button>
+            {notice.href !== '/contact' && <Link to="/contact" className="text-sm font-semibold text-brand-700 dark:text-brand-300">Contact admin</Link>}
+          </div>
+        </section>
+      ))}
+
+      {!admissionAction && <section className="card mb-6 border-l-4 border-l-brand-500">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Next Best Action</p>
-            <h2 className="mt-1 truncate text-lg font-semibold text-gray-900 dark:text-white">{nextAction.title}</h2>
+            <h2 className="mt-1 break-words text-lg font-semibold text-gray-900 dark:text-white">{nextAction.title}</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">{nextAction.detail}</p>
           </div>
           <Button onClick={() => navigate(nextAction.href)} icon={nextAction.icon}>{nextAction.label}</Button>
         </div>
-      </section>
+      </section>}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
         {statCards.map(({ key, ...props }) => (
@@ -212,7 +237,7 @@ export default function StudentDashboard() {
                     {e.class_name ? `Class: ${e.class_name} (${e.class_code})${e.instructor_name ? ` - ${e.instructor_name}` : ''}` : 'Class allocation pending'}
                   </p>
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex shrink-0 flex-wrap items-center gap-2">
                   {e.class_forum_category_id && (
                     <Link to={`/student/forums/${e.class_forum_category_id}`} className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-brand-700 hover:bg-brand-50 dark:text-brand-300 dark:hover:bg-brand-500/10">
                       <MessageSquare className="h-3.5 w-3.5" aria-hidden="true" />

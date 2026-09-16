@@ -66,16 +66,9 @@ export default function Sidebar({ isOpen, onClose, onSignOut }) {
 
   return (
     <>
-      <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-brand-600 text-white rounded-lg shadow-lg"
-        onClick={() => onClose(!isOpen)}
-        aria-label={isOpen ? 'Close sidebar' : 'Open sidebar'}
-      >
-        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-      </button>
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 bg-navy-900 text-white transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
+        className={`fixed inset-y-0 left-0 z-40 w-64 bg-navy-900 text-white transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'invisible -translate-x-full lg:visible lg:translate-x-0'}`}
         aria-label="Main navigation"
       >
         <div className="flex flex-col h-full">

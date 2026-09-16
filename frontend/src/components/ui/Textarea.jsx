@@ -16,7 +16,7 @@ const Textarea = forwardRef(({
   const textareaId = id || label?.toLowerCase().replace(/\s+/g, '-');
 
   return (
-    <div className="w-full">
+    <div className="w-full min-w-0">
       {label && (
         <label htmlFor={textareaId} className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
           {label}
@@ -28,7 +28,7 @@ const Textarea = forwardRef(({
         id={textareaId}
         rows={rows}
         className={`
-          w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-800
+          w-full min-w-0 max-w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-800
           text-gray-900 dark:text-white placeholder-gray-400
           transition-all duration-200 resize-y min-h-[100px]
           focus:outline-none focus:ring-2 focus:ring-offset-0

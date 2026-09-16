@@ -191,7 +191,7 @@ export default function Header({ title = 'Admin Dashboard', subtitle = 'Full sys
             </button>
 
             {showNotifications && (
-              <div className="fixed left-4 right-4 top-16 mt-2 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:w-96 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden animate-slide-in-right">
+              <div className="fixed z-50 left-4 right-4 top-16 mt-2 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:w-96 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden animate-slide-in-right">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                   <h3 className="font-semibold text-gray-900 dark:text-white">Notifications</h3>
                   <div className="flex items-center gap-3">
@@ -245,7 +245,7 @@ export default function Header({ title = 'Admin Dashboard', subtitle = 'Full sys
             </button>
 
             {showMessages && (
-              <div className="fixed left-4 right-4 top-16 mt-2 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:w-96 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden animate-slide-in-right">
+              <div className="fixed z-50 left-4 right-4 top-16 mt-2 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:w-96 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden animate-slide-in-right">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                   <h3 className="font-semibold text-gray-900 dark:text-white">Messages</h3>
                   <button onClick={() => setShowMessages(false)} className="text-gray-400 hover:text-gray-600" aria-label="Close messages">
@@ -301,7 +301,7 @@ export default function Header({ title = 'Admin Dashboard', subtitle = 'Full sys
             </button>
 
             {showUserMenu && (
-              <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden animate-slide-in-right">
+              <div className="absolute z-50 right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden animate-slide-in-right">
                 <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                   <p className="font-medium text-sm text-gray-900 dark:text-white">{user?.name || 'User'}</p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email || ''}</p>

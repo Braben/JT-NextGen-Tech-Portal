@@ -30,11 +30,11 @@ const statConfig = {
 };
 
 function TrendIndicator({ trend }) {
-  if (!trend || trend === 'neutral') return <Minus className="w-4 h-4 text-gray-400" aria-hidden="true" />;
+  if (!trend || trend === 'neutral') return <Minus className="w-4 h-4 shrink-0 text-gray-400" aria-hidden="true" />;
   return trend === 'up' ? (
-    <TrendingUp className="w-4 h-4 text-emerald-500" aria-hidden="true" />
+    <TrendingUp className="w-4 h-4 shrink-0 text-emerald-500" aria-hidden="true" />
   ) : (
-    <TrendingDown className="w-4 h-4 text-red-500" aria-hidden="true" />
+    <TrendingDown className="w-4 h-4 shrink-0 text-red-500" aria-hidden="true" />
   );
 }
 
@@ -79,9 +79,9 @@ export default function StatCard({
           <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mt-1">{value}</p>
           {subValue !== undefined && (
             <div className="flex flex-wrap items-center gap-2 mt-2">
-              <span className={`inline-flex flex-wrap items-center gap-1 text-sm font-medium ${trend === 'up' ? 'text-emerald-600' : trend === 'down' ? 'text-red-600' : 'text-gray-500'}`}>
+              <span className={`inline-flex max-w-full items-start gap-1 text-sm font-medium ${trend === 'up' ? 'text-emerald-600' : trend === 'down' ? 'text-red-600' : 'text-gray-500'}`}>
                 <TrendIndicator trend={trend} />
-                {subValue}
+                <span className="min-w-0">{subValue}</span>
               </span>
               {trendLabel && <span className="text-xs text-gray-400">{trendLabel}</span>}
               {subLabel && <span className="text-xs text-gray-400">{subLabel}</span>}
