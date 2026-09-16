@@ -12,7 +12,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 import { ClipboardCheck, Download, Eye, Save, Search, Send } from 'lucide-react';
-import { adminAPI, enrollmentAPI, programAPI } from '../../api';
+import { adminAPI, enrollmentAPI, programAPI, classAPI } from '../../api';
 import { useToast } from '../../context/ToastContext';
 import DataTable from '../../components/admin/Table';
 import { Button, Select, Modal } from '../../components/ui';
@@ -31,6 +31,53 @@ export default function EnrollmentsManagement() {
   const [gradeForm, setGradeForm] = useState({ score: '', max_score: 100, feedback: '', status: 'reviewed' });
   const [grading, setGrading] = useState(false);
   const [recommending, setRecommending] = useState(false);
+  const [classes, setClasses] = useState([]);
+  const [classesLoading, setClassesLoading] = useState(false);
+  const [classesError, setClassesError] = useState('');
+  const [placement, setPlacement] = useState({ program_id: '', class_id: '', session: 'Morning' });
+  const [placementSaving, setPlacementSaving] = useState(false);
+  const [placementError, setPlacementError] = useState('');
+
+  const loadClasses = async () => {
+    setClassesLoading(true);
+    setClassesError('');
+    try {
+      const res = await classAPI.getAll();
+      setClasses(res.data || []);
+    } catch {
+      setClassesError('Could not load classes. Please retry.');
+    } finally {
+      setClassesLoading(false);
+    }
+  };
+
+  const savePlacement = async (event) => {
+    event.preventDefault();
+    if (placementSaving || classesLoading || classesError) return;
+    const enrollment = viewingEnrollment;
+    setPlacementSaving(true);
+    setPlacementError('');
+    try {
+      const { data } = await enrollmentAPI.update(enrollment.id, { ...placement, class_id: placement.class_id || null });
+      const selectedClass = classes.find((item) => item.id === data.class_id);
+      const updated = {
+        ...data,
+        program_title: programs.find((item) => item.id === data.program_id)?.title || enrollment.program_title,
+        class_name: selectedClass?.name || null,
+        class_code: selectedClass?.code || null,
+        class_status: selectedClass?.status || null,
+        class_forum_category_id: selectedClass?.forum_category_id || null,
+        instructor_name: selectedClass?.instructor_name || null,
+      };
+      setEnrollments((current) => current.map((row) => row.id === enrollment.id ? { ...row, ...updated } : row));
+      setViewingEnrollment((current) => current?.id === enrollment.id ? { ...current, ...updated } : current);
+      toast('Program, class, and session updated', 'success');
+    } catch (err) {
+      setPlacementError(err.response?.data?.error || 'Could not save enrollment changes. Please try again.');
+    } finally {
+      setPlacementSaving(false);
+    }
+  };
 
   useEffect(() => {
     const statusParam = searchParams.get('filter');
@@ -96,6 +143,9 @@ export default function EnrollmentsManagement() {
 
   const openEnrollment = (row) => {
     setViewingEnrollment(row);
+    setPlacement({ program_id: row.program_id, class_id: row.class_id || '', session: row.session || 'Morning' });
+    setPlacementError('');
+    loadClasses();
     setGradeForm({
       score: row.assessment_score ?? '',
       max_score: row.assessment_max_score || 100,
@@ -371,6 +421,25 @@ export default function EnrollmentsManagement() {
                 <p className="text-gray-600 dark:text-gray-400">{new Date(viewingEnrollment.enrolled_at).toLocaleDateString()}</p>
               </div>
             </div>
+
+            <form onSubmit={savePlacement} className="rounded-xl border border-gray-200 dark:border-gray-700 p-4 space-y-4">
+              <h3 className="font-semibold text-gray-900 dark:text-white">Change program, class, or session</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Changing the program or session clears the class selection. Choose a matching class or leave the student unallocated.</p>
+              {classesError && <div role="alert" className="text-sm text-red-600">{classesError} <button type="button" onClick={loadClasses} className="underline">Retry</button></div>}
+              {placementError && <p role="alert" className="text-sm text-red-600">{placementError}</p>}
+              <fieldset disabled={placementSaving || classesLoading || Boolean(classesError)} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <Select label="Program" required value={placement.program_id} options={programs.map((item) => ({ value: item.id, label: item.title }))}
+                  onChange={(event) => { setPlacement((current) => ({ ...current, program_id: event.target.value, class_id: '' })); setPlacementError(''); }} />
+                <Select label="Session" required value={placement.session} options={['Morning', 'Evening'].map((value) => ({ value, label: value }))}
+                  onChange={(event) => { setPlacement((current) => ({ ...current, session: event.target.value, class_id: '' })); setPlacementError(''); }} />
+                <Select label="Class" value={placement.class_id} options={[
+                  { value: '', label: classesLoading ? 'Loading classes...' : 'Unallocated' },
+                  ...classes.filter((item) => item.program_id === placement.program_id && item.session === placement.session && (['planned', 'active'].includes(item.status) || item.id === viewingEnrollment.class_id))
+                    .map((item) => ({ value: item.id, label: `${item.name} (${item.code})` })),
+                ]} onChange={(event) => { setPlacement((current) => ({ ...current, class_id: event.target.value })); setPlacementError(''); }} />
+              </fieldset>
+              <Button type="submit" icon={Save} loading={placementSaving} disabled={classesLoading || Boolean(classesError)}>Save enrollment changes</Button>
+            </form>
 
             {viewingEnrollment.assessment_id ? (
               <div className="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">

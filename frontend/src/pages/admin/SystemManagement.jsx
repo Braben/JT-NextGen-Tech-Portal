@@ -10,10 +10,10 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { Loader2, RefreshCw, Server, Database, HardDrive, Users, Wifi, CheckCircle, XCircle, AlertCircle, ExternalLink } from 'lucide-react';
+import { Loader2, RefreshCw, Server, Database, HardDrive, Users, Wifi, CheckCircle, XCircle, ExternalLink } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import { Card, Button } from '../../components/ui';
+import { systemAPI } from '../../api';
 
 const checks = [
   { key: 'api', label: 'API Server', icon: Server, description: 'Main application server' },
@@ -29,12 +29,16 @@ export default function SystemManagement() {
   const [loading, setLoading] = useState(true);
   const [checkResults, setCheckResults] = useState({});
   const [lastCheck, setLastCheck] = useState(null);
+  const [error, setError] = useState('');
 
   const runHealthCheck = useCallback(async () => {
     setLoading(true);
+    setError('');
     try {
-      const res = await fetch('/api/health');
-      const data = await res.json();
+      const { data } = await systemAPI.health();
+      if (!data || !['ok', 'degraded'].includes(data.status) || !data.database || !data.uploads) {
+        throw new Error('The server returned an invalid health report.');
+      }
       setHealth(data);
       setLastCheck(new Date());
 
@@ -46,7 +50,7 @@ export default function SystemManagement() {
           let value = '—';
           switch (check.key) {
             case 'api':
-              ok = data.status === 'ok';
+              ok = true;
               value = 'Operational';
               break;
             case 'database':
@@ -58,12 +62,12 @@ export default function SystemManagement() {
               value = ok ? 'Writable' : 'Not writable';
               break;
             case 'users':
-              ok = true;
-              value = '—';
+              ok = null;
+              value = 'Not reported by the server';
               break;
             case 'replication':
-              ok = true;
-              value = 'Healthy';
+              ok = null;
+              value = 'Not reported by the server';
               break;
           }
           results[check.key] = { ok, value, checkedAt: new Date() };
@@ -73,6 +77,10 @@ export default function SystemManagement() {
       }
       setCheckResults(results);
     } catch (err) {
+      setHealth(null);
+      setLastCheck(new Date());
+      setCheckResults(Object.fromEntries(checks.map(({ key }) => [key, { ok: null, value: 'Unavailable' }])));
+      setError(err.code === 'ECONNABORTED' ? 'The health check timed out. Please try again.' : err.message || 'Health check failed. Please try again.');
       toast('Health check failed', 'error');
     } finally {
       setLoading(false);
@@ -100,6 +108,8 @@ export default function SystemManagement() {
           Refresh
         </Button>
       </div>
+
+      {error && <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">{error}</div>}
 
       {lastCheck && (
         <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
@@ -142,7 +152,7 @@ export default function SystemManagement() {
                   <div className="flex items-center gap-2 mt-2">
                     {result.ok === true && <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-sm"><CheckCircle className="w-4 h-4" /> Healthy</span>}
                     {result.ok === false && <span className="inline-flex items-center gap-1 text-red-600 dark:text-red-400 text-sm"><XCircle className="w-4 h-4" /> Issue</span>}
-                    {result.ok === null && <span className="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400 text-sm"><Loader2 className="w-4 h-4 animate-spin" /> Checking...</span>}
+                    {loading ? <span className="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400 text-sm"><Loader2 className="w-4 h-4 animate-spin" /> Checking...</span> : result.ok === null && <span className="text-gray-500 dark:text-gray-400 text-sm">Not checked</span>}
                     <span className="text-sm font-medium text-gray-900 dark:text-white">{result.value}</span>
                   </div>
                 </div>
@@ -166,7 +176,7 @@ export default function SystemManagement() {
           </div>
           <div>
             <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Uploads Directory</p>
-            <p className="font-medium">{health?.uploads?.status === 'ok' ? 'Writable' : 'Not writable'}</p>
+            <p className="font-medium">{!health ? '—' : health.uploads.status === 'ok' ? 'Writable' : 'Not writable'}</p>
           </div>
           <div>
             <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Uptime</p>
@@ -187,7 +197,7 @@ export default function SystemManagement() {
       <Card>
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Links</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <Button variant="outline" icon={ExternalLink} className="justify-start" onClick={() => window.open('/api/health', '_blank')}>
+          <Button variant="outline" icon={ExternalLink} className="justify-start" onClick={() => window.open(systemAPI.healthUrl(), '_blank', 'noopener,noreferrer')}>
             Health Endpoint
           </Button>
           <Button variant="outline" icon={ExternalLink} className="justify-start">

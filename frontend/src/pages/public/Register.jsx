@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -22,6 +22,7 @@ import {
 import { programAPI } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import { educationOptions } from '../../lib/onboardingAssessment';
+import { requireList } from '../../api/responseValidation';
 
 const storageKey = 'jtng.registrationDraft.v2';
 
@@ -95,6 +96,8 @@ export default function Register() {
   const navigate = useNavigate();
   const { register } = useAuth();
   const [programs, setPrograms] = useState([]);
+  const [programsLoading, setProgramsLoading] = useState(true);
+  const [programsError, setProgramsError] = useState('');
   const [form, setForm] = useState(readDraft);
   const [fieldErrors, setFieldErrors] = useState({});
   const [error, setError] = useState('');
@@ -109,13 +112,27 @@ export default function Register() {
   const passwordStrength = form.password.length === 0 ? 0 : form.password.length < 6 ? 1 : form.password.length < 9 ? 2 : 3;
   const progress = currentPage ? Math.round(((pageIndex + 1) / pages.length) * 100) : 0;
 
-  useEffect(() => {
-    document.title = 'Register | JT NextGen Tech Hub';
-    programAPI.getAll().then((res) => setPrograms(res.data || [])).catch(() => {});
+  const loadPrograms = useCallback(async () => {
+    setProgramsLoading(true);
+    setProgramsError('');
+    try {
+      const { data } = await programAPI.getAll();
+      setPrograms(requireList(data));
+      if (!data.length) setProgramsError('No programs are currently available. Please contact admissions.');
+    } catch {
+      setProgramsError('Programs could not be loaded. Please retry before continuing.');
+    } finally {
+      setProgramsLoading(false);
+    }
   }, []);
 
   useEffect(() => {
-    sessionStorage.setItem(storageKey, JSON.stringify(form));
+    document.title = 'Register | JT NextGen Tech Hub';
+    loadPrograms();
+  }, [loadPrograms]);
+
+  useEffect(() => {
+    try { sessionStorage.setItem(storageKey, JSON.stringify(form)); } catch { /* Continue when browser storage is unavailable. */ }
   }, [form]);
 
   if (!currentPage) return <Navigate to="/register/account" replace />;
@@ -157,6 +174,9 @@ export default function Register() {
 
     if (targetPage === 'profile') {
       if (!form.program_id) errors.program_id = 'Please select a program';
+      else if (programsLoading) errors.program_id = 'Please wait for programs to load';
+      else if (programsError) errors.program_id = programsError;
+      else if (!selectedProgram) errors.program_id = 'Please select an available program';
       if (!form.session) errors.session = 'Please select a session';
       if (!form.date_of_birth) errors.date_of_birth = 'Date of birth is required';
       if (!form.gender) errors.gender = 'Please select a gender option';
@@ -200,6 +220,11 @@ export default function Register() {
 
   const submit = async (event) => {
     event.preventDefault();
+    if (loading) return;
+    if (page !== 'review') {
+      goNext();
+      return;
+    }
 
     // Final submission validates every URL-backed page because the user may
     // arrive directly at /register/review from history or a copied link.
@@ -225,7 +250,7 @@ export default function Register() {
           computing_experience: form.computing_experience,
         },
       });
-      sessionStorage.removeItem(storageKey);
+      try { sessionStorage.removeItem(storageKey); } catch { /* Registration already succeeded. */ }
       navigate('/student');
     } catch (err) {
       const response = err.response?.data || {};
@@ -237,7 +262,9 @@ export default function Register() {
       if (Object.keys(serverFieldErrors).length) {
         showValidationErrors(serverFieldErrors);
       } else {
-        setError(response.error || 'Registration failed. Please review the form and try again.');
+        setError(response.error || (err.code === 'ECONNABORTED' || !err.response
+          ? 'We could not confirm your application. Your account may have been created; try signing in before submitting again.'
+          : 'Registration failed. Please review the form and try again.'));
       }
     } finally {
       setLoading(false);
@@ -348,7 +375,11 @@ export default function Register() {
                         <AccountPage form={form} focused={focused} fieldErrors={fieldErrors} passwordStrength={passwordStrength} showPassword={showPassword} showConfirmPassword={showConfirmPassword} setFocused={setFocused} setShowPassword={setShowPassword} setShowConfirmPassword={setShowConfirmPassword} update={update} />
                       )}
                       {page === 'profile' && (
-                        <ProfilePage form={form} programs={programs} selectedProgram={selectedProgram} focused={focused} fieldErrors={fieldErrors} setFocused={setFocused} setValue={setValue} update={update} />
+                        <>
+                          {programsLoading && <p role="status" className="mb-4 text-sm text-slate-600">Loading programs...</p>}
+                          {programsError && <div role="alert" className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{programsError} <button type="button" onClick={loadPrograms} disabled={programsLoading} className="font-semibold underline">Retry</button></div>}
+                          <ProfilePage form={form} programs={programs} selectedProgram={selectedProgram} focused={focused} fieldErrors={fieldErrors} setFocused={setFocused} setValue={setValue} update={update} />
+                        </>
                       )}
                       {page === 'review' && (
                         <ReviewPage form={form} selectedProgram={selectedProgram} fieldErrors={fieldErrors} update={update} />
@@ -365,7 +396,7 @@ export default function Register() {
                       )}
                     </div>
                     {page !== 'review' ? (
-                      <button type="button" onClick={goNext} className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-black">
+                      <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-black">
                         Continue <ArrowRight className="h-4 w-4" />
                       </button>
                     ) : (

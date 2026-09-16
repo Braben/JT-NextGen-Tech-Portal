@@ -10,6 +10,15 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+export const systemAPI = {
+  health: () => api.get('/health', {
+    timeout: 20000,
+    // A degraded health report is useful data, even when the server returns 503.
+    validateStatus: (status) => status === 200 || status === 503,
+  }),
+  healthUrl: () => api.getUri({ url: '/health' }),
+};
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
@@ -35,7 +44,7 @@ api.interceptors.response.use(
 
 export const authAPI = {
   login: (data) => api.post('/auth/login', data),
-  register: (data) => api.post('/auth/register', data),
+  register: (data) => api.post('/auth/register', data, { timeout: 60000 }),
   me: () => api.get('/auth/me'),
   updateProfile: (data) => api.put('/auth/profile', data),
   changePassword: (data) => api.put('/auth/change-password', data),
@@ -86,7 +95,7 @@ export const chatbotAPI = {
 };
 
 export const programAPI = {
-  getAll: () => api.get('/programs'),
+  getAll: () => api.get('/programs', { timeout: 60000 }),
   get: (slug) => api.get(`/programs/${slug}`),
   create: (data) => api.post('/programs', data),
   update: (id, data) => api.put(`/programs/${id}`, data),

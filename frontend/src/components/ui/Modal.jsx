@@ -24,6 +24,9 @@ export default function Modal({
 }) {
   const modalRef = useRef(null);
   const previousActiveElement = useRef(null);
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => { onCloseRef.current = onClose; }, [onClose]);
 
   const sizeClasses = {
     sm: 'max-w-md',
@@ -33,38 +36,46 @@ export default function Modal({
     full: 'max-w-full mx-4',
   };
 
-  // Focus management and keyboard handling
+  // Only opening/closing may move focus. Inline onClose callbacks change on
+  // every form render, including keystrokes, so read the latest one via a ref.
   useEffect(() => {
     if (isOpen) {
       previousActiveElement.current = document.activeElement;
+      const previousOverflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
       // Focus the modal or first focusable element
-      setTimeout(() => modalRef.current?.focus(), 0);
+      const focusTimer = setTimeout(() => modalRef.current?.focus(), 0);
 
       const handleKeyDown = (e) => {
-        if (e.key === 'Escape') onClose();
+        if (e.key === 'Escape') onCloseRef.current?.();
         if (e.key === 'Tab') trapFocus(e);
       };
 
       document.addEventListener('keydown', handleKeyDown);
       return () => {
-        document.body.style.overflow = '';
+        clearTimeout(focusTimer);
+        document.body.style.overflow = previousOverflow;
         document.removeEventListener('keydown', handleKeyDown);
         previousActiveElement.current?.focus();
       };
     }
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   // Focus trapping
   const trapFocus = (e) => {
     if (!modalRef.current) return;
-    const focusableElements = modalRef.current.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
+    const focusableElements = Array.from(modalRef.current.querySelectorAll(
+      'button, [href], input, select, textarea, [contenteditable="true"], [tabindex]'
+    )).filter((element) => !element.disabled && element.tabIndex !== -1 && element.getClientRects().length > 0);
+    if (!focusableElements.length) {
+      e.preventDefault();
+      modalRef.current.focus();
+      return;
+    }
     const firstElement = focusableElements[0];
     const lastElement = focusableElements[focusableElements.length - 1];
 
-    if (e.shiftKey && document.activeElement === firstElement) {
+    if (e.shiftKey && (document.activeElement === firstElement || document.activeElement === modalRef.current)) {
       e.preventDefault();
       lastElement.focus();
     } else if (!e.shiftKey && document.activeElement === lastElement) {
