@@ -16,6 +16,7 @@ import { programAPI, adminAPI } from '../../api';
 import { useToast } from '../../context/ToastContext';
 import { useConfirm } from '../../context/ConfirmContext';
 import { Card, Button, Input, Select, Modal, Textarea } from '../../components/ui';
+import ProgramIcon, { programIconOptions, normalizeProgramIcon } from '../../components/ProgramIcon';
 
 export default function ProgramsManagement() {
   const { toast } = useToast();
@@ -33,7 +34,7 @@ export default function ProgramsManagement() {
     duration: '3 Months',
     level: 'Beginner',
     audience: '',
-    icon: '',
+    icon: 'computing',
     outcomes: [],
     outcomeInput: '',
   });
@@ -56,7 +57,7 @@ export default function ProgramsManagement() {
 
   const resetForm = () => {
     setFormError('');
-    setForm({ title: '', slug: '', description: '', duration: '3 Months', level: 'Beginner', audience: '', icon: '', outcomes: [], outcomeInput: '' });
+    setForm({ title: '', slug: '', description: '', duration: '3 Months', level: 'Beginner', audience: '', icon: 'computing', outcomes: [], outcomeInput: '' });
     setEditingProgram(null);
   };
 
@@ -93,7 +94,7 @@ export default function ProgramsManagement() {
     let outcomes = [];
     try { outcomes = Array.isArray(program.outcomes) ? program.outcomes : JSON.parse(program.outcomes || '[]'); } catch { outcomes = []; }
     setEditingProgram(program);
-    setForm({ title: program.title, slug: program.slug, description: program.description, duration: program.duration || '3 Months', level: program.level || 'Beginner', audience: program.audience || '', icon: program.icon || '', outcomes, outcomeInput: '' });
+    setForm({ title: program.title, slug: program.slug, description: program.description, duration: program.duration || '3 Months', level: program.level || 'Beginner', audience: program.audience || '', icon: normalizeProgramIcon(program.icon), outcomes, outcomeInput: '' });
     setShowForm(true);
   };
 
@@ -188,7 +189,7 @@ export default function ProgramsManagement() {
             >
               <Card className="h-full hover-lift">
                 <div className="flex items-start justify-between mb-3">
-                  {program.icon && <span className="text-3xl flex-shrink-0">{program.icon}</span>}
+                  <ProgramIcon value={program.icon} className="h-8 w-8 shrink-0 text-core dark:text-turquoise" />
 <div className="flex items-center gap-1 ml-auto">
                       <Button variant="ghost" size="sm" icon={Edit} onClick={() => handleEdit(program)} aria-label="Edit program" title="Edit program" />
                       <Button variant="danger" size="sm" icon={Trash2} onClick={() => handleDelete(program)} aria-label="Delete program" title="Delete program" />
@@ -235,7 +236,7 @@ export default function ProgramsManagement() {
                 { value: 'Intermediate', label: 'Intermediate' },
                 { value: 'Advanced', label: 'Advanced' },
               ]} />
-              <Input label="Icon (emoji or URL)" value={form.icon} onChange={(e) => setForm({ ...form, icon: e.target.value })} placeholder="💻 or /icons/web.png" />
+              <Select label="Program icon" value={normalizeProgramIcon(form.icon)} onChange={(e) => setForm({ ...form, icon: e.target.value })} options={programIconOptions} />
             </div>
             <Input label="Audience (comma separated)" value={form.audience} onChange={(e) => setForm({ ...form, audience: e.target.value })} placeholder="Beginners, Career changers, Students" />
             <div>

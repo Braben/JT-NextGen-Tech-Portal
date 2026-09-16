@@ -1,10 +1,13 @@
+@import './theme.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root { color-scheme: light; --chart-grid: #B9CFC2; }
+  :root.dark { color-scheme: dark; --chart-grid: #4D6657; }
   body {
-    @apply text-gray-800 antialiased;
+    @apply bg-page text-ink antialiased;
     /* Prevent any fixed-width child from causing page-level horizontal scroll */
     overflow-x: hidden;
     /* Break long URLs, serial numbers, and unbroken strings */
@@ -12,57 +15,8 @@
     word-break: break-word;
   }
   .dark body, .dark {
-    @apply bg-gray-900 text-gray-100;
+    @apply bg-page text-ink;
   }
-}
-
-/* JT NextGen Brand Colors */
-@layer utilities {
-  .bg-navy-50 { background-color: #f0f4f8; }
-  .bg-navy-100 { background-color: #d9e2ec; }
-  .bg-navy-200 { background-color: #bcccdc; }
-  .bg-navy-300 { background-color: #9fb3c8; }
-  .bg-navy-400 { background-color: #829ab1; }
-  .bg-navy-500 { background-color: #627d98; }
-  .bg-navy-600 { background-color: #486581; }
-  .bg-navy-700 { background-color: #334e68; }
-  .bg-navy-800 { background-color: #243b53; }
-  .bg-navy-900 { background-color: #102a43; }
-  .bg-navy-950 { background-color: #0c1e35; }
-
-  .text-navy-50 { color: #f0f4f8; }
-  .text-navy-100 { color: #d9e2ec; }
-  .text-navy-200 { color: #bcccdc; }
-  .text-navy-300 { color: #9fb3c8; }
-  .text-navy-400 { color: #829ab1; }
-  .text-navy-500 { color: #627d98; }
-  .text-navy-600 { color: #486581; }
-  .text-navy-700 { color: #334e68; }
-  .text-navy-800 { color: #243b53; }
-  .text-navy-900 { color: #102a43; }
-  .text-navy-950 { color: #0c1e35; }
-
-  .border-navy-50 { border-color: #f0f4f8; }
-  .border-navy-100 { border-color: #d9e2ec; }
-  .border-navy-200 { border-color: #bcccdc; }
-  .border-navy-300 { border-color: #9fb3c8; }
-  .border-navy-400 { border-color: #829ab1; }
-  .border-navy-500 { border-color: #627d98; }
-  .border-navy-600 { border-color: #486581; }
-  .border-navy-700 { border-color: #334e68; }
-  .border-navy-800 { border-color: #243b53; }
-  .border-navy-900 { border-color: #102a43; }
-
-  .bg-brand-50 { background-color: #f0fdf4; }
-  .bg-brand-100 { background-color: #dcfce7; }
-  .bg-brand-200 { background-color: #bbf7d0; }
-  .bg-brand-300 { background-color: #86efac; }
-  .bg-brand-400 { background-color: #4ade80; }
-  .bg-brand-500 { background-color: #22c55e; }
-  .bg-brand-600 { background-color: #16a34a; }
-  .bg-brand-700 { background-color: #15803d; }
-  .bg-brand-800 { background-color: #166534; }
-  .bg-brand-900 { background-color: #14532d; }
 }
 
 @layer components {
@@ -76,10 +30,10 @@
     @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
   }
   .input-field {
-    @apply w-full min-w-0 max-w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all duration-200;
+    @apply w-full min-w-0 max-w-full px-4 py-2 bg-white text-gray-900 placeholder-gray-500 border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all duration-200;
   }
   .card {
-    @apply min-w-0 max-w-full bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6;
+    @apply min-w-0 max-w-full bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6;
     overflow-wrap: anywhere;
   }
   .card-hover {
@@ -89,25 +43,45 @@
     @apply bg-gray-800 border-gray-700;
   }
   .dark .input-field {
-    @apply bg-gray-700 border-gray-600 text-gray-100;
+    @apply bg-gray-900 border-gray-500 text-gray-100 placeholder-gray-400;
   }
   .dark .btn-secondary {
     @apply bg-gray-700 hover:bg-gray-600 text-gray-100;
   }
   .dark body, .dark {
-    @apply bg-gray-900 text-gray-100;
+    @apply bg-page text-ink;
   }
-  .dark .text-gray-900 { color: #f3f4f6; }
-  .dark .text-gray-800 { color: #e5e7eb; }
-  .dark .text-gray-700 { color: #d1d5db; }
-  .dark .text-gray-600 { color: #9ca3af; }
-  .dark .text-gray-500 { color: #9ca3af; }
-  .dark .text-gray-400 { color: #9ca3af; }
-  .dark .bg-gray-50 { background-color: #1f2937; }
-  .dark .bg-white { background-color: #1f2937; }
-  .dark .border-gray-100 { border-color: #374151; }
-  .dark .border-gray-200 { border-color: #374151; }
-  .dark .border-gray-300 { border-color: #4b5563; }
+  .dark .text-gray-900 { color: #E2EDE8; }
+  .dark .text-gray-800 { color: #E2EDE8; }
+  .dark .text-gray-700 { color: #D6E2DB; }
+  .dark .text-gray-600, .dark .text-gray-500 { color: #B9CFC2; }
+  .dark .text-gray-400 { color: #A0BCAE; }
+  .dark .bg-gray-50, .dark .bg-white { background-color: #12241B; }
+  .dark .bg-gray-100, .dark .bg-gray-200 { background-color: #284535; }
+  .dark .border-gray-100, .dark .border-gray-200 { border-color: #4D6657; }
+  .dark .border-gray-300 { border-color: #647C6D; }
+  /* Legacy badges and links without explicit dark variants. Explicit variants
+     remain authoritative because Tailwind utilities follow this layer. */
+  .dark :is(.bg-brand-50, .bg-brand-100, .bg-green-50, .bg-green-100, .bg-emerald-50, .bg-emerald-100) { background-color: #123d32; }
+  .dark :is(.text-brand-600, .text-brand-700, .text-brand-800, .text-green-600, .text-green-700, .text-green-800, .text-emerald-600, .text-emerald-700, .text-emerald-800) { color: #33C2B1; }
+  .dark :is(.bg-blue-50, .bg-blue-100, .bg-sky-50, .bg-sky-100) { background-color: #173456; }
+  .dark :is(.text-blue-600, .text-blue-700, .text-blue-800, .text-sky-600, .text-sky-700) { color: #93c5fd; }
+  .dark :is(.bg-yellow-50, .bg-yellow-100, .bg-amber-50, .bg-amber-100, .bg-orange-50, .bg-orange-100) { background-color: #44321c; }
+  .dark :is(.text-yellow-600, .text-yellow-700, .text-yellow-800, .text-amber-600, .text-amber-700, .text-amber-800, .text-orange-600, .text-orange-700) { color: #FCD73E; }
+  .dark :is(.bg-red-50, .bg-red-100, .bg-rose-50, .bg-rose-100) { background-color: #4a2430; }
+  .dark :is(.text-red-600, .text-red-700, .text-red-800, .text-rose-600, .text-rose-700) { color: #fda4af; }
+  .dark :is(.bg-purple-50, .bg-purple-100, .bg-indigo-50, .bg-indigo-100) { background-color: #342c52; }
+  .dark :is(.text-purple-600, .text-purple-700, .text-purple-800, .text-indigo-600, .text-indigo-700) { color: #c4b5fd; }
+  :root:not(.dark) .dashboard-content .text-gray-400 { color: #647C6D; }
+  :root:not(.dark) .dashboard-content .text-gray-500 { color: #4D6657; }
+  :root:not(.dark) .dashboard-content :is(.text-emerald-600, .text-green-600) { color: #047857; }
+  :root:not(.dark) .dashboard-content :is(.text-yellow-600, .text-amber-600, .text-orange-600) { color: #92400e; }
+  .dark .dashboard-content .hover\:bg-gray-50:hover,
+  .dark .dashboard-content .hover\:bg-gray-100:hover { background-color: #284535; }
+  .dark .dashboard-content .hover\:text-gray-900:hover { color: #E2EDE8; }
+  :root:not(.dark) :is(.text-gray-900, .text-gray-800) { color: rgb(var(--ink)); }
+  .dark .dark\:text-white { color: rgb(var(--ink)); }
+  .status-badge.warning { background: rgb(var(--accent)); color: #0D1F16; }
 }
 
 .jodit-wrapper .jodit-container {
@@ -141,6 +115,24 @@
 }
 .jodit-wrapper .jodit-status-bar a {
   display: none !important;
+}
+
+/* The editor supplies its own styles, so its surfaces need explicit overrides. */
+.dark .jodit-wrapper :is(.jodit-container, .jodit-workplace, .jodit-wysiwyg) {
+  background: #0A140F !important;
+  color: #E2EDE8 !important;
+  border-color: #647C6D !important;
+}
+.dark .jodit-wrapper :is(.jodit-toolbar__box, .jodit-status-bar) {
+  background: #12241B !important;
+  color: #B9CFC2 !important;
+  border-color: #4D6657 !important;
+}
+.dark .jodit-wrapper .jodit-toolbar-button__button { color: #D6E2DB !important; }
+.dark .jodit-wrapper .jodit-icon { fill: currentColor !important; }
+.dark .jodit-wrapper .jodit-toolbar-button_active .jodit-toolbar-button__button {
+  background: #123d32 !important;
+  color: #33C2B1 !important;
 }
 
 @keyframes slide-in-right {
@@ -224,7 +216,7 @@
 }
 
 .status-badge.success { @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400; }
-.status-badge.warning { @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400; }
+.status-badge.warning { background: rgb(var(--accent)); color: #0D1F16; }
 .status-badge.danger { @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400; }
 .status-badge.info { @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400; }
 .status-badge.gray { @apply bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-400; }

@@ -58,8 +58,8 @@ export function LineChart({
         <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
           <defs>
             <linearGradient id="gridGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#e5e7eb" stopOpacity="0.5" />
-              <stop offset="100%" stopColor="#e5e7eb" stopOpacity="0" />
+              <stop offset="0%" stopColor="var(--chart-grid)" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="var(--chart-grid)" stopOpacity="0" />
             </linearGradient>
           </defs>
           <g stroke="url(#gridGradient)" strokeWidth="0.5">
@@ -134,7 +134,7 @@ export function DonutChart({
       <div className="flex min-w-0 max-w-full flex-col items-center">
         <div className="relative flex items-center justify-center" style={{ width: size, maxWidth: '100%', aspectRatio: '1 / 1' }}>
           <svg className="h-full w-full" width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-            <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#e5e7eb" strokeWidth={strokeWidth} />
+            <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="var(--chart-grid)" strokeWidth={strokeWidth} />
           </svg>
           {showCenter && (
             <div className="absolute inset-[18%] text-center flex flex-col items-center justify-center">

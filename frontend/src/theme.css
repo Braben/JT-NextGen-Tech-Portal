@@ -1,0 +1,17 @@
+/* Product palette. RGB channels allow Tailwind opacity modifiers. */
+:root {
+  --page: 244 247 245; /* #F4F7F5 */
+  --surface: 255 255 255; /* #FFFFFF */
+  --ink: 13 31 22; /* #0D1F16 */
+  --core: 13 56 35; /* #0D3823 */
+  --turquoise: 0 168 150; /* #00A896 */
+  --accent: 255 204 8; /* #FFCC08 */
+}
+:root.dark {
+  --page: 10 20 15; /* #0A140F */
+  --surface: 18 36 27; /* #12241B */
+  --ink: 226 237 232; /* #E2EDE8 */
+  --core: 26 83 54; /* #1A5336 */
+  --turquoise: 51 194 177; /* #33C2B1 */
+  --accent: 252 215 62; /* #FCD73E */
+}

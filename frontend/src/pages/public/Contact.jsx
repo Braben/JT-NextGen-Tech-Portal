@@ -39,8 +39,8 @@ export default function Contact() {
   };
 
   return (
-    <motion.section initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-[#f8fafc]">
-      <div className="bg-[#07111f] text-white">
+    <motion.section initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-page">
+      <div className="bg-core text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/80">

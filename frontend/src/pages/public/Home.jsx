@@ -136,7 +136,7 @@ function TrustBar() {
 function ProgramsSection({ programs }) {
   const reduce = useReducedMotion();
   return (
-    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-[#f8fafc]">
+    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-page">
       <div className="max-w-7xl mx-auto">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }} variants={stagger} className="flex flex-wrap items-end justify-between gap-4 mb-8 sm:mb-10">
           <motion.div variants={fadeUp}>
@@ -189,7 +189,7 @@ function ValueSection() {
         </motion.div>
         <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }} className="mt-8 grid gap-6 md:grid-cols-3">
           {items.map((it, i)=>(
-            <motion.div key={it.title} custom={i} variants={fadeUp} whileHover={{ y: -6, scale: 1.01 }} whileTap={{ scale: 0.99 }} className="rounded-[20px] border border-gray-100 bg-[#f8fafc] p-6 hover:bg-white hover:shadow-[0_16px_40px_rgba(16,42,67,0.08)] hover:border-gray-200 group">
+            <motion.div key={it.title} custom={i} variants={fadeUp} whileHover={{ y: -6, scale: 1.01 }} whileTap={{ scale: 0.99 }} className="rounded-[20px] border border-gray-100 bg-page p-6 hover:bg-white hover:shadow-[0_16px_40px_rgba(16,42,67,0.08)] hover:border-gray-200 group">
               <motion.div whileHover={{ rotate: 5, scale: 1.06 }} className={`w-11 h-11 rounded-xl bg-gradient-to-br ${it.gradient} flex items-center justify-center text-white shadow-sm`}><it.icon className="w-5 h-5" /></motion.div>
               <h3 className="mt-4 text-[16px] font-bold text-navy-900">{it.title}</h3>
               <p className="mt-2 text-[13px] leading-5 text-gray-500">{it.text}</p>
@@ -216,7 +216,7 @@ function EventsSection({ events }) {
         </motion.div>
         <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {events.slice(0,6).map((ev,i)=>(
-            <motion.div key={ev.id} custom={i} variants={fadeUp} whileHover={{ y: -3, scale: 1.01 }} className="rounded-[16px] border border-gray-100 bg-[#f8fafc] p-4 flex gap-3.5 hover:bg-white hover:shadow-sm hover:border-gray-200">
+            <motion.div key={ev.id} custom={i} variants={fadeUp} whileHover={{ y: -3, scale: 1.01 }} className="rounded-[16px] border border-gray-100 bg-page p-4 flex gap-3.5 hover:bg-white hover:shadow-sm hover:border-gray-200">
               <div className="shrink-0 w-[56px] h-[56px] rounded-xl bg-navy-900 text-white flex flex-col items-center justify-center leading-none">
                 <span className="text-[18px] font-extrabold">{new Date(ev.event_date).getDate()}</span>
                 <span className="text-[10px] tracking-widest font-semibold opacity-80">{new Date(ev.event_date).toLocaleString('en', { month:'short' }).toUpperCase()}</span>
@@ -237,7 +237,7 @@ function EventsSection({ events }) {
 function BlogSection({ blogs }) {
   if (!blogs?.length) return null;
   return (
-    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-[#f8fafc]">
+    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-page">
       <div className="max-w-7xl mx-auto">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="flex flex-wrap items-end justify-between gap-4 mb-8">
           <motion.div variants={fadeUp}>
@@ -340,7 +340,7 @@ function TestimonialsSection({ testimonials = fallbackTestimonials }) {
 function FAQSection() {
   const [open, setOpen] = useState(0);
   return (
-    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-[#f8fafc]">
+    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-page">
       <div className="max-w-4xl mx-auto">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center max-w-2xl mx-auto">
           <motion.div variants={fadeUp} className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest text-brand-700"><Search className="w-3.5 h-3.5" /> FAQ</motion.div>

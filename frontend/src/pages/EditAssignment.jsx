@@ -7,6 +7,7 @@ import { useToast } from '../context/ToastContext';
 import { useConfirm } from '../context/ConfirmContext';
 import { Card, Button, Input, Select, Textarea } from '../components/ui';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { FiFileText } from 'react-icons/fi';
 const RichTextEditor = lazy(() => import('../components/RichTextEditor'));
 
 export default function EditAssignment() {
@@ -140,7 +141,7 @@ export default function EditAssignment() {
           {submissions.length === 0 ? (
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-gray-400 text-xl">📄</span>
+                <FiFileText className="h-5 w-5 shrink-0 text-gray-500 dark:text-gray-300" aria-hidden="true" />
               </div>
               <p className="text-gray-400">No submissions yet</p>
             </div>

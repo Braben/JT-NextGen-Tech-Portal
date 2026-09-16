@@ -176,7 +176,7 @@ export default function StudentDashboard() {
           <h2 className="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{notice.title}</h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{notice.detail}</p>
           <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-            <Button onClick={() => navigate(notice.href)}>{notice.label}</Button>
+            <Button variant={notice.href === '/contact' ? 'secondary' : 'accent'} onClick={() => navigate(notice.href)}>{notice.label}</Button>
             {notice.href !== '/contact' && <Link to="/contact" className="text-sm font-semibold text-brand-700 dark:text-brand-300">Contact admin</Link>}
           </div>
         </section>

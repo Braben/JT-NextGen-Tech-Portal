@@ -272,7 +272,7 @@ export default function Register() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#07111f] selection:bg-brand-500/30">
+    <div className="relative min-h-screen overflow-hidden bg-core selection:bg-brand-500/30">
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
         <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(22,163,74,0.14),transparent_42%,rgba(30,64,175,0.14))]" />

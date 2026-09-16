@@ -28,14 +28,14 @@ const Select = forwardRef(({
         ref={ref}
         id={selectId}
         className={`
-          w-full min-w-0 max-w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-800
+          w-full min-w-0 max-w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900
           text-gray-900 dark:text-white
           transition-all duration-200
           focus:outline-none focus:ring-2 focus:ring-offset-0
           appearance-none
           ${error
             ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
-            : 'border-gray-200 dark:border-gray-600 focus:ring-brand-500 focus:border-brand-500'}
+            : 'border-gray-500 dark:border-gray-500 focus:ring-brand-500 focus:border-brand-500'}
           ${props.disabled ? 'bg-gray-100 dark:bg-gray-700 cursor-not-allowed' : ''}
           ${className}
         `}
