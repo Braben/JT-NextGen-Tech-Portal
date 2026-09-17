@@ -33,6 +33,8 @@ function initSocket(httpServer) {
     if (!token) return next(new Error('No token'));
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
+      // Roles can change during a token's lifetime. Resolve the current user
+      // before joining privileged rooms; existing sockets need separate eviction.
       const user = await db.prepare('SELECT id, name, role FROM users WHERE id = ?').get(decoded.id);
       if (!user) return next(new Error('Invalid token'));
       socket.user = user;

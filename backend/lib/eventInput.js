@@ -3,6 +3,8 @@ const { instructorProgramIds, isAdmin } = require('./accessControl');
 module.exports = async function eventInput(body, user, existing = {}) {
   const value = { ...existing, ...body };
   const fail = (message, status = 400) => { throw Object.assign(new Error(message), { status }); };
+  // Legacy forms sent "none" for global events. Persist SQL NULL instead of
+  // that UI sentinel so both database adapters satisfy the program foreign key.
   const program = !value.program_id || value.program_id === 'none' ? null : value.program_id;
   if (program && !await db.prepare('SELECT id FROM programs WHERE id = ?').get(program)) fail('Select an existing program');
   if (!isAdmin(user) && program && !(await instructorProgramIds(db, user)).includes(program)) fail('You can only schedule events for your programs', 403);

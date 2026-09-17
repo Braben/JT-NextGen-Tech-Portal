@@ -28,6 +28,8 @@ export default function ContentManagement({ type = 'blog' }) {
     e.preventDefault(); setSaving(true); setError('');
     try {
       const { title,excerpt,content,cover_image,review_status } = form;
+      // Send editable fields only. In particular, do not send the row's old
+      // published flag alongside a newly selected review status.
       await blogAPI.save(form.id,{title,excerpt,content,cover_image,review_status,content_type:type});
       setForm(null); toast(review_status === 'published' ? 'Post published' : review_status === 'pending' ? 'Article submitted for admin review' : 'Draft saved','success'); await load();
     } catch(e) { setError(e.response?.data?.error || 'Could not save this post. Your work is still in the editor.'); }

@@ -35,11 +35,14 @@ Recheck overrides when updating Prisma; do not remove them without auditing.
   stale token roles. Deleted users cannot open a new connection. Malformed
   typing payloads are ignored rather than throwing from the event handler.
 
-## Validation
+## Validation at review time
 
 - 67 backend tests pass, including authorization, private resources, content
   sanitization, publishing permissions, CSP parity and WebSocket regression tests.
 - 10 frontend tests pass; production build succeeds.
+- The publishing/security-specific tests and publishing preview fixtures were
+  subsequently removed during the requested cleanup. The counts above record
+  the original review run, not the size of the remaining test suite.
 - Prisma schema validation succeeds with the dependency overrides.
 - Built home and sign-in pages load under enforced CSP in a local browser with
   no observed CSP errors. Preview API responses were local fixtures.
@@ -52,7 +55,7 @@ Recheck overrides when updating Prisma; do not remove them without auditing.
 Deploy both Netlify and the backend with the updated manifests and lockfiles.
 Use `npm ci` in each package directory. These changes are not deployed by this
 review; recheck actual response headers after deployment. If the API/socket
-hostname changes, update both CSP policies with it (the parity test catches drift).
+hostname changes, update and manually compare both CSP policies together.
 
 The frontend still stores bearer tokens in localStorage, so XSS prevention
 remains important. Role changes do not evict already connected sockets; the

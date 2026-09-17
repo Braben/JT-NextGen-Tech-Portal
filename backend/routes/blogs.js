@@ -26,6 +26,8 @@ function input(body, user, existing = {}) {
   let status = body.review_status || (body.published !== undefined ? (body.published === true || body.published === 1 ? 'published' : 'draft') : existing.review_status || 'draft');
   if (!['draft','pending','published'].includes(status)) fail('Select a valid publication status');
   if (user.role !== 'admin') {
+    // An instructor revision must be reviewed again, even when the previous
+    // version was published. Never inherit publication from the stored row.
     if (body.review_status === 'published' || body.published) fail('Only admins can publish articles', 403);
     status = body.review_status === 'pending' ? 'pending' : 'draft';
   }
@@ -34,6 +36,8 @@ function input(body, user, existing = {}) {
   return { title, content, excerpt: typeof merged.excerpt === 'string' ? merged.excerpt.trim().slice(0,500) : '', cover_image: cover || null, content_type: type, review_status: status, published: status === 'published' ? 1 : 0 };
 }
 for (const path of ['/manage','/admin']) {
+  // Keep legacy /admin clients working; /manage also supports instructor-owned
+  // articles. Ownership checks still apply to every individual mutation.
   const permission = path === '/admin' ? authorize('admin') : authorize('admin','instructor');
   router.get(path, authenticate, permission, async (req,res,next) => {
     try { res.json(await db.prepare(`${SELECT} ${req.user.role === 'admin' ? '' : "WHERE b.author_id = ? AND b.content_type = 'article'"} ORDER BY b.created_at DESC`).all(...(req.user.role === 'admin' ? [] : [req.user.id]))); } catch(e) { next(e); }
