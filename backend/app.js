@@ -22,7 +22,7 @@ try {
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-const helmet = require("helmet");
+const securityHeaders = require("./lib/securityHeaders");
 const rateLimit = require("express-rate-limit");
 const fs = require("fs");
 
@@ -62,7 +62,7 @@ const app = express();
 /*  1. Security middleware (applied first, in order)                  */
 /* ------------------------------------------------------------------ */
 
-app.use(helmet());
+app.use(securityHeaders());
 
 const allowedOrigins = (
   process.env.CORS_ORIGIN ||

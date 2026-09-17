@@ -1,5 +1,6 @@
 const { Server } = require('socket.io');
 const jwt = require('jsonwebtoken');
+const db = require('../config/db');
 
 const onlineUsers = new Map();
 let _io = null;
@@ -27,12 +28,14 @@ function initSocket(httpServer) {
     },
   });
 
-  _io.use((socket, next) => {
+  _io.use(async (socket, next) => {
     const token = socket.handshake.auth?.token || socket.handshake.query?.token;
     if (!token) return next(new Error('No token'));
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      socket.user = decoded;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
+      const user = await db.prepare('SELECT id, name, role FROM users WHERE id = ?').get(decoded.id);
+      if (!user) return next(new Error('Invalid token'));
+      socket.user = user;
       next();
     } catch { next(new Error('Invalid token')); }
   });
@@ -49,11 +52,13 @@ function initSocket(httpServer) {
     // after persistence; clients cannot fabricate delivery or read receipts.
 
     socket.on('typing:start', (data) => {
+      if (!data || typeof data.receiver_id !== 'string' || data.receiver_id.length > 100) return;
       const { receiver_id } = data;
       _io.to(`user:${receiver_id}`).emit('typing:update', { user_id: userId, name: socket.user.name, typing: true });
     });
 
     socket.on('typing:stop', (data) => {
+      if (!data || typeof data.receiver_id !== 'string' || data.receiver_id.length > 100) return;
       const { receiver_id } = data;
       _io.to(`user:${receiver_id}`).emit('typing:update', { user_id: userId, name: socket.user.name, typing: false });
     });
