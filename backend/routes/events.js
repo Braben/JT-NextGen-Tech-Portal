@@ -11,6 +11,8 @@ const db = require('../config/db');
 const { cacheMiddleware, invalidate } = require('../middleware/cache');
 const { instructorProgramIds, isAdmin, isInstructor, isStudent } = require('../lib/accessControl');
 const { trimString } = require('../lib/validators');
+const eventInput = require('../lib/eventInput');
+const audit = require('../services/audit');
 
 /** Public endpoint — upcoming public events for the landing page (no auth). */
 router.get('/public', cacheMiddleware(60), async (req, res, next) => {
@@ -68,12 +70,13 @@ router.get('/', authenticate, async (req, res, next) => {
 router.post('/', authenticate, async (req, res, next) => {
   try {
     if (!isInstructor(req.user) && !isAdmin(req.user)) return res.status(403).json({ error: 'Unauthorized' });
-    const { program_id, title, description, event_date, start_time, end_time, type, is_public } = req.body;
+    const { program_id, title, description, event_date, start_time, end_time, type, is_public } = await eventInput(req.body, req.user);
     if (!title || !event_date) return res.status(400).json({ error: 'Title and date required' });
     const id = uuidv4();
     await db.prepare('INSERT INTO events (id, program_id, title, description, event_date, start_time, end_time, type, is_public, created_by) VALUES (?,?,?,?,?,?,?,?,?,?)').run(id, program_id || null, trimString(title, 200), trimString(description, 1000), event_date, start_time || '', end_time || '', type || 'other', isAdmin(req.user) && is_public ? 1 : 0, req.user.id);
     await db.saveDb();
     invalidate('/api/events');
+    await audit(req.user, 'create', 'event', id, `Created event ${title}`);
     const row = await db.prepare('SELECT e.*, p.title AS program_name FROM events e LEFT JOIN programs p ON e.program_id = p.id WHERE e.id = ?').get(id);
     res.json(row);
   } catch (e) { next(e); }
@@ -84,9 +87,10 @@ router.put('/:id', authenticate, async (req, res, next) => {
     const ev = await db.prepare('SELECT * FROM events WHERE id = ?').get(req.params.id);
     if (!ev) return res.status(404).json({ error: 'Event not found' });
     if (!isAdmin(req.user) && (!isInstructor(req.user) || ev.created_by !== req.user.id)) return res.status(403).json({ error: 'Unauthorized' });
-    const { title, description, event_date, start_time, end_time, type, is_public } = req.body;
-    await db.prepare('UPDATE events SET title=COALESCE(?,title), description=COALESCE(?,description), event_date=COALESCE(?,event_date), start_time=COALESCE(?,start_time), end_time=COALESCE(?,end_time), type=COALESCE(?,type), is_public=? WHERE id=?')
+    const { program_id, title, description, event_date, start_time, end_time, type, is_public } = await eventInput(req.body, req.user, ev);
+    await db.prepare('UPDATE events SET program_id=?, title=COALESCE(?,title), description=COALESCE(?,description), event_date=COALESCE(?,event_date), start_time=COALESCE(?,start_time), end_time=COALESCE(?,end_time), type=COALESCE(?,type), is_public=? WHERE id=?')
       .run(
+        program_id,
         title !== undefined ? trimString(title, 200) : undefined,
         description !== undefined ? trimString(description, 1000) : undefined,
         event_date,
@@ -98,6 +102,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
       );
     await db.saveDb();
     invalidate('/api/events');
+    await audit(req.user, 'update', 'event', req.params.id, `Updated event ${title}`);
     const row = await db.prepare('SELECT e.*, p.title AS program_name FROM events e LEFT JOIN programs p ON e.program_id = p.id WHERE e.id = ?').get(req.params.id);
     res.json(row);
   } catch (e) { next(e); }

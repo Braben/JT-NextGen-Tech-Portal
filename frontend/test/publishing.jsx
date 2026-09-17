@@ -1,0 +1,31 @@
+// Isolated browser fixture: all APIs use memory, never a live account.
+import React,{useEffect} from 'react';
+import { createRoot } from 'react-dom/client';
+import { MemoryRouter,Routes,Route } from 'react-router-dom';
+import { AuthProvider,useAuth } from '../src/context/AuthContext';
+import { ToastProvider } from '../src/context/ToastContext';
+import { ConfirmProvider } from '../src/context/ConfirmContext';
+import { authAPI,blogAPI,programAPI,eventAPI,socialAPI } from '../src/api';
+import ContentManagement from '../src/pages/ContentManagement';
+import SocialLinksManagement from '../src/pages/admin/SocialLinksManagement';
+import CalendarManagement from '../src/pages/admin/CalendarManagement';
+import Blog from '../src/pages/public/Blog';
+import BlogPost from '../src/pages/public/BlogPost';
+import '../src/index.css';
+const params=new URLSearchParams(location.search), role=params.get('role') || 'admin', type=params.get('type') || 'blog';
+document.documentElement.classList.toggle('dark',params.get('theme')==='dark');
+const saved={token:localStorage.getItem('token'),user:localStorage.getItem('user')};
+authAPI.me=async()=>({data:{id:'fixture',name:'Test Writer',role}});
+authAPI.login=async()=>({data:{token:'fixture-only',user:{id:'fixture',name:'Test Writer',role}}});
+let posts=[],events=[],links={};
+blogAPI.manage=async()=>({data:posts});
+blogAPI.save=async(id,data)=>{const row={...data,id:id||String(posts.length+1),slug:'test-post',author_name:'Test Writer',created_at:new Date().toISOString(),updated_at:new Date().toISOString(),published:data.review_status==='published'?1:0};posts=posts.filter(p=>p.id!==row.id).concat(row);return{data:row};};
+blogAPI.remove=async(id)=>{posts=posts.filter(p=>p.id!==id);return{data:{}};};
+blogAPI.getAll=async({type='blog'}={})=>({data:posts.filter(p=>p.published&&p.content_type===type)});
+blogAPI.get=async slug=>({data:posts.find(p=>p.slug===slug)});
+programAPI.getAll=async()=>({data:[{id:'course',title:'Computing'}]});
+eventAPI.getAll=async()=>({data:events});
+eventAPI.create=async data=>{if(data.program_id==='none')throw Error('Invalid global program');const row={...data,id:'event'};events.push(row);return{data:row};};
+socialAPI.get=async()=>({data:links});socialAPI.update=async data=>({data:links=data});
+function Session(){const{user,login}=useAuth();useEffect(()=>{login('fixture','fixture').finally(()=>{for(const[key,value]of Object.entries(saved)){if(value===null)localStorage.removeItem(key);else localStorage.setItem(key,value);}});},[]);return user?<main className="dashboard-content mx-auto max-w-5xl p-4"><Routes><Route path="/" element={params.get('page')==='events'?<CalendarManagement/>:params.get('page')==='social'?<SocialLinksManagement/>:<ContentManagement type={type}/>} /><Route path="/blog" element={<Blog/>}/><Route path="/articles" element={<Blog type="article"/>}/><Route path="/blog/:slug" element={<BlogPost/>}/><Route path="/articles/:slug" element={<BlogPost type="article"/>}/></Routes></main>:<p>Loading fixture...</p>;}
+createRoot(document.getElementById('root')).render(<AuthProvider><ToastProvider><ConfirmProvider><MemoryRouter><Session/></MemoryRouter></ConfirmProvider></ToastProvider></AuthProvider>);

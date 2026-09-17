@@ -33,6 +33,8 @@ const PublicRegister       = lazy(() => import('./pages/public/Register'));
 const ApplicationSubmitted = lazy(() => import('./pages/public/ApplicationSubmitted'));
 const Blog                 = lazy(() => import('./pages/public/Blog'));
 const BlogPost             = lazy(() => import('./pages/public/BlogPost'));
+const ContentManagement    = lazy(() => import('./pages/ContentManagement'));
+const SocialLinksManagement = lazy(() => import('./pages/admin/SocialLinksManagement'));
 const Login                = lazy(() => import('./pages/Login'));
 const ForgotPassword       = lazy(() => import('./pages/ForgotPassword'));
 const ResetPassword        = lazy(() => import('./pages/ResetPassword'));
@@ -133,6 +135,8 @@ export default function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/articles" element={<Blog type="article" />} />
+          <Route path="/articles/:slug" element={<BlogPost type="article" />} />
 
           <Route path="/submission/:id" element={<ProtectedRoute><SubmissionDetail /></ProtectedRoute>} />
           <Route path="/profile" element={<RoleRedirect admin="/admin/account" instructor="/instructor/profile" student="/student/profile" />} />
@@ -169,6 +173,7 @@ export default function App() {
           {/* Instructor routes with InstructorLayout wrapper — same theme & auth pattern as Admin */}
           <Route element={<ProtectedRoute role="instructor"><InstructorLayout /></ProtectedRoute>}>
             <Route path="/instructor" element={<InstructorDashboard />} />
+            <Route path="/instructor/articles" element={<ContentManagement type="article" />} />
             <Route path="/instructor/profile" element={<Profile />} />
             <Route path="/instructor/create" element={<CreateAssignment />} />
             <Route path="/instructor/edit/:id" element={<EditAssignment />} />
@@ -187,6 +192,9 @@ export default function App() {
           {/* Admin routes with AdminLayout wrapper */}
           <Route element={<ProtectedRoute role="admin"><AdminLayout /></ProtectedRoute>}>
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/blog" element={<ContentManagement />} />
+            <Route path="/admin/articles" element={<ContentManagement type="article" />} />
+            <Route path="/admin/social-links" element={<SocialLinksManagement />} />
             <Route path="/admin/users" element={<UsersManagement />} />
             <Route path="/admin/programs" element={<ProgramsManagement />} />
             <Route path="/admin/classes" element={<ClassAllocation />} />

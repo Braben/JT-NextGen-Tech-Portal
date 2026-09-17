@@ -380,6 +380,15 @@ const MIGRATIONS = [
       try { db.exec('CREATE INDEX IF NOT EXISTS idx_assignments_class_due ON assignments(class_id, due_date)'); } catch {}
     },
   },
+  {
+    name: '022-content-publishing-social-links',
+    up: (db) => {
+      db.exec("ALTER TABLE blogs ADD COLUMN content_type TEXT NOT NULL DEFAULT 'blog'");
+      db.exec("ALTER TABLE blogs ADD COLUMN review_status TEXT NOT NULL DEFAULT 'draft'");
+      db.exec("UPDATE blogs SET review_status = 'published' WHERE published = 1");
+      db.exec("CREATE TABLE social_links (platform TEXT PRIMARY KEY, url TEXT NOT NULL DEFAULT '')");
+    },
+  },
 ];
 
 /**

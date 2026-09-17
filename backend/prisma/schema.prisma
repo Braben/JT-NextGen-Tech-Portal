@@ -484,6 +484,8 @@ model Event {
 }
 
 model Blog {
+  content_type String @default("blog")
+  review_status String @default("draft")
   id          String   @id @default(uuid())
   title       String
   slug        String   @unique
@@ -497,6 +499,12 @@ model Blog {
   author      User     @relation(fields: [author_id], references: [id])
 
   @@map("blogs")
+}
+
+model SocialLink {
+  platform String @id
+  url String @default("")
+  @@map("social_links")
 }
 
 model Quiz {

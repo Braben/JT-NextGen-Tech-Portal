@@ -3,6 +3,16 @@
 @tailwind components;
 @tailwind utilities;
 
+.post-content { overflow-wrap: anywhere; line-height: 1.75; white-space: pre-wrap; }
+.post-content :is(h2,h3,h4) { font-weight: 700; margin: 1.25em 0 .5em; }
+.post-content h2 { font-size: 1.5rem; }
+.post-content h3 { font-size: 1.25rem; }
+.post-content :is(p,ul,ol,blockquote,pre) { margin-bottom: 1em; }
+.post-content ul { list-style: disc; padding-left: 1.5em; }
+.post-content ol { list-style: decimal; padding-left: 1.5em; }
+.post-content a { text-decoration: underline; }
+.post-content pre { overflow-x: auto; white-space: pre; }
+
 @layer base {
   :root { color-scheme: light; --chart-grid: #B9CFC2; }
   :root.dark { color-scheme: dark; --chart-grid: #4D6657; }
@@ -33,14 +43,14 @@
     @apply w-full min-w-0 max-w-full px-4 py-2 bg-white text-gray-900 placeholder-gray-500 border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all duration-200;
   }
   .card {
-    @apply min-w-0 max-w-full bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6;
+    @apply min-w-0 max-w-full bg-white rounded-2xl shadow-sm border border-gray-200/80 p-4 sm:p-6;
     overflow-wrap: anywhere;
   }
   .card-hover {
     @apply card hover:shadow-md hover:border-brand-200 transition-all duration-200 cursor-pointer;
   }
   .dark .card, .dark.card {
-    @apply bg-gray-800 border-gray-700;
+    @apply bg-gray-800 border-gray-700/70;
   }
   .dark .input-field {
     @apply bg-gray-900 border-gray-500 text-gray-100 placeholder-gray-400;
@@ -321,24 +331,8 @@
 .public-content .text-gray-400 { color: rgb(var(--field-placeholder)); }
 .dark .public-content :is(.bg-gray-50\/60, .bg-white\/80, .bg-white\/90) { background-color: rgb(var(--surface)); }
 
-/* Decorative accents stay at the edges, never behind labels or body copy.
-   Compose with Tailwind's ring and elevation shadows to preserve focus states. */
-:is(.card, .accent-card) {
-  box-shadow: inset 3px 0 0 rgb(var(--accent)),
-    var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow, 0 0 #0000);
-}
-:is(button, [role="button"], .btn-primary, .btn-secondary, .btn-danger, a[class*="rounded"][class*="bg-"]) {
-  box-shadow: inset 0 -2px 0 rgb(var(--accent)),
-    var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow, 0 0 #0000);
-}
-/* A button that is itself a card keeps both small edge accents. */
-button:is(.card, .accent-card) {
-  box-shadow: inset 3px 0 0 rgb(var(--accent)), inset 0 -2px 0 rgb(var(--accent)),
-    var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow, 0 0 #0000);
-}
+/* Cards use their own surface, border and elevation utilities. Keep button
+   shadows local so ghost actions, links and keyboard focus stay clean. */
 @media print {
   :is(.card, .accent-card, button, [role="button"]) { box-shadow: none; }
 }

@@ -172,7 +172,7 @@ export default function CalendarManagement() {
   const filteredEvents = events.filter((e) =>
     (e.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
      e.program_name?.toLowerCase().includes(searchQuery.toLowerCase())) &&
-    (!programFilter || e.program_id === programFilter) &&
+    (!programFilter || (programFilter === 'none' ? !e.program_id : e.program_id === programFilter)) &&
     (!typeFilter || e.type === typeFilter)
   );
 
@@ -225,7 +225,7 @@ export default function CalendarManagement() {
       {showForm && (
         <Modal isOpen={showForm} onClose={() => { setShowForm(false); resetForm(); }} title={editingEvent ? 'Edit Event' : 'Create New Event'} size="lg">
           <form onSubmit={handleSubmit} className="space-y-4">
-            <Select label="Program" value={form.program_id} onChange={(e) => setForm({ ...form, program_id: e.target.value })} options={programOptions} placeholder="Global event (no program)" />
+            <Select label="Program" value={form.program_id} onChange={(e) => setForm({ ...form, program_id: e.target.value })} options={[{ value: '', label: 'Global event (no program)' }, ...programs.map(p => ({ value: p.id, label: p.title }))]} />
             <Input label="Event Title *" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required placeholder="e.g., Midterm Exam" />
             <Textarea label="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} placeholder="Event details..." />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

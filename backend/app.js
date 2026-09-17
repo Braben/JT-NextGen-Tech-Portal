@@ -173,6 +173,7 @@ app.use("/api/events", eventRoutes);
 app.use("/api/quizzes", quizRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use("/api/social-links", require('./routes/socialLinks'));
 app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/certificates", certificateRoutes);
 app.use("/api/files", fileRoutes);

@@ -228,12 +228,20 @@ export const eventAPI = {
 };
 
 export const blogAPI = {
-  getAll: () => api.get('/blogs'),
+  getAll: (params) => api.get('/blogs', { params }),
   get: (slug) => api.get(`/blogs/${slug}`),
   getAdmin: () => api.get('/blogs/admin'),
   create: (data) => api.post('/blogs/admin', data),
   update: (id, data) => api.put(`/blogs/admin/${id}`, data),
   delete: (id) => api.delete(`/blogs/admin/${id}`),
+  manage: () => api.get('/blogs/manage'),
+  save: (id, data) => id ? api.put(`/blogs/manage/${id}`, data) : api.post('/blogs/manage', data),
+  remove: (id) => api.delete(`/blogs/manage/${id}`),
+};
+
+export const socialAPI = {
+  get: () => api.get('/social-links'),
+  update: (data) => api.put('/social-links', data),
 };
 
 export const quizAPI = {

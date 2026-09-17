@@ -15,9 +15,9 @@ const Card = forwardRef(({
   ...props
 }, ref) => {
   const variantClasses = {
-    default: 'bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700',
-    hover: 'bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md hover:border-brand-200 dark:hover:border-brand-800 transition-all duration-200 cursor-pointer',
-    bordered: 'bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-200 dark:border-gray-700',
+    default: 'bg-surface rounded-2xl shadow-sm border border-gray-200/80 dark:border-gray-700/70',
+    hover: 'bg-surface rounded-2xl shadow-sm border border-gray-200/80 dark:border-gray-700/70 hover:shadow-md hover:border-brand-300 dark:hover:border-brand-600 transition-[border-color,box-shadow] duration-200 cursor-pointer',
+    bordered: 'bg-surface rounded-2xl border border-gray-300 dark:border-gray-600',
   };
 
   const paddingClasses = {

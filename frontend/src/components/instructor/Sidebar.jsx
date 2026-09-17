@@ -26,6 +26,7 @@ const navigation = [
     group: 'Teaching',
     items: [
       { key: 'materials', label: 'Materials', icon: BookOpen, href: '/instructor/materials' },
+      { key: 'articles', label: 'My Articles', icon: FileText, href: '/instructor/articles' },
       { key: 'classes', label: 'Classes', icon: GraduationCap, href: '/instructor/classes' },
       { key: 'quizzes', label: 'Quizzes', icon: HelpCircle, href: '/instructor/quizzes' },
       { key: 'attendance', label: 'Attendance', icon: CalendarCheck, href: '/instructor/attendance' },

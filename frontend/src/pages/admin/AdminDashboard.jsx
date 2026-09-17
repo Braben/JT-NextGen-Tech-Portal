@@ -320,6 +320,8 @@ export default function AdminDashboard() {
 }
 
 const quickActions = [
+  { key: 'blog', label: 'Write Blog', icon: BookOpen, href: '/admin/blog' },
+  { key: 'articles', label: 'Review Articles', icon: ClipboardCheck, href: '/admin/articles' },
   { key: 'add-student', label: 'Add Student', icon: UserPlus, href: '/admin/users?action=add' },
   { key: 'create-program', label: 'Create Program', icon: GraduationCap, href: '/admin/programs?action=add' },
   { key: 'classes', label: 'Allocate Class', icon: Users, href: '/admin/classes' },

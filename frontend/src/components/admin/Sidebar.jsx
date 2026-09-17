@@ -37,6 +37,9 @@ const navigation = [
     items: [
       { key: 'materials', label: 'Materials', icon: FileText, href: '/admin/materials' },
       { key: 'calendar', label: 'Calendar', icon: Calendar, href: '/admin/calendar' },
+      { key: 'blog', label: 'Blog', icon: FileText, href: '/admin/blog' },
+      { key: 'articles', label: 'Articles', icon: FileText, href: '/admin/articles' },
+      { key: 'social-links', label: 'Social Links', icon: MessageSquare, href: '/admin/social-links' },
       { key: 'quizzes', label: 'Quizzes', icon: HelpCircle, href: '/admin/quizzes' },
       { key: 'messages', label: 'Messages', icon: MessageSquare, href: '/admin/messages' },
       { key: 'forums', label: 'Forums', icon: MessageSquare, href: '/admin/forums' },

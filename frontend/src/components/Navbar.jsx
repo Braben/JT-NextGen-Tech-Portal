@@ -35,6 +35,7 @@ export default function Navbar() {
     { to: '/about', label: 'About' },
     { to: '/contact', label: 'Contact' },
     { to: '/blog', label: 'Blog' },
+    { to: '/articles', label: 'Articles' },
     { to: '/verify-certificate', label: 'Verify Certificate' },
   ];
 
