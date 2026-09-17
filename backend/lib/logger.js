@@ -64,8 +64,8 @@ function emit(level, levelName, message, meta) {
     if (meta && Object.keys(meta).length > 0 && !meta.requestId) {
       console.log(JSON.stringify(meta, null, 2));
     }
-    if (entry.err && entry.err.stack) {
-      console.log(entry.err.stack);
+    if (entry.err) {
+      console.log(entry.err.stack || `${entry.err.name}: ${entry.err.message}`);
     }
     return;
   }
