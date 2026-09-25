@@ -1,9 +1,11 @@
 const { test, before, after } = require('node:test');
 const assert = require('node:assert/strict');
 const request = require('supertest');
-const jwt = require('jsonwebtoken');
 const { v4: uuid } = require('uuid');
 const { app, db, waitForDb, cleanupTestDb } = require('./helpers');
+const { issueSession } = require('../lib/sessions');
+// Placement tests need real revocable sessions, not legacy unsigned-session JWTs.
+const tokenFor = async user => (await issueSession(user, { set() {}, cookie() {} })).token;
 
 let adminToken;
 let instructorToken;
@@ -30,8 +32,8 @@ const update = (id, data, token = adminToken) => request(app).put(`/api/enrollme
 
 before(async () => {
   await waitForDb();
-  adminToken = jwt.sign(await user('admin'), process.env.JWT_SECRET);
-  instructorToken = jwt.sign(await user('instructor'), process.env.JWT_SECRET);
+  adminToken = await tokenFor(await user('admin'));
+  instructorToken = await tokenFor(await user('instructor'));
   for (const id of [programA, programB]) {
     await db.prepare('INSERT INTO programs (id, title, slug, description) VALUES (?,?,?,?)').run(id, id, id, 'Test program');
   }
@@ -50,7 +52,7 @@ test('admin changes program, class and session together and student sees the new
   assert.equal(res.body.class_id, evening);
   assert.equal(res.body.session, 'Evening');
   assert.equal(res.body.status, 'active');
-  const visible = await request(app).get('/api/enrollments').set('Authorization', `Bearer ${jwt.sign(student, process.env.JWT_SECRET)}`);
+  const visible = await request(app).get('/api/enrollments').set('Authorization', `Bearer ${await tokenFor(student)}`);
   assert.equal(visible.body[0].class_name, evening);
   const audit = await db.prepare("SELECT * FROM admin_audit_log WHERE entity_id = ? AND action = 'enrollment.placement'").get(id);
   assert.equal(JSON.parse(audit.details).before.program_id, programA);
@@ -97,7 +99,7 @@ test('duplicate enrollment, full class and archived class are rejected', async (
 
 test('students and instructors cannot change enrollment placement', async () => {
   const { id, student } = await enrollment();
-  assert.equal((await update(id, { session: 'Evening' }, jwt.sign(student, process.env.JWT_SECRET))).status, 403);
+  assert.equal((await update(id, { session: 'Evening' }, await tokenFor(student))).status, 403);
   assert.equal((await update(id, { program_id: programB }, instructorToken)).status, 403);
   assert.equal((await request(app).put(`/api/enrollments/${id}`).send({ session: 'Evening' })).status, 401);
 });

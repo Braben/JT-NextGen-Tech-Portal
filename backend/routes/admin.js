@@ -151,6 +151,7 @@ router.put('/users/:id', authenticate, authorize('admin'), async (req, res, next
         .run(name || existing.name, email || existing.email, role || existing.role, req.params.id);
     }
     await db.saveDb?.();
+    if (password || (role && role !== existing.role)) await require('../lib/sessions').revokeUser(req.params.id);
     await audit(req.user, 'update', 'user', req.params.id, `Updated user ${name || existing.name}`);
     res.json(await db.prepare('SELECT id, name, email, role FROM users WHERE id = ?').get(req.params.id));
   } catch (err) {
@@ -163,6 +164,7 @@ router.delete('/users/:id', authenticate, authorize('admin'), async (req, res, n
     if (req.params.id === req.user.id) return res.status(400).json({ error: 'Admins cannot delete their own account' });
     const existing = await db.prepare('SELECT name, email FROM users WHERE id = ?').get(req.params.id);
     if (existing) await audit(req.user, 'delete', 'user', req.params.id, `Deleted user ${existing.name} (${existing.email})`);
+    await require('../lib/sessions').revokeUser(req.params.id);
     await db.prepare('DELETE FROM users WHERE id = ?').run(req.params.id);
     await db.saveDb?.();
     res.json({ message: 'User deleted' });

@@ -142,3 +142,18 @@ test('certificates: public verification returns safe certificate fields', async 
   assert.strictEqual(res.body.program_title, 'Security Program');
   assert.strictEqual(res.body.student_id, undefined);
 });
+
+test('rate limits: users sharing an IP have separate signed-user quotas', async () => {
+  const express = require('express');
+  const limits = require('../lib/rateLimits');
+  const sample = express();
+  sample.use(limits.scoped(2));
+  sample.get('/', (req,res) => res.json({ok:true}));
+  const call = token => request(sample).get('/').set('Authorization', `Bearer ${token}`);
+  assert.equal((await call(tokens.admin)).status,200);
+  assert.equal((await call(tokens.admin)).status,200);
+  const blocked = await call(tokens.admin);
+  assert.equal(blocked.status,429);
+  assert.ok(Number(blocked.headers['retry-after']) > 0);
+  assert.equal((await call(tokens.student)).status,200);
+});

@@ -13,8 +13,18 @@
 const { test, before, after } = require('node:test');
 const assert = require('node:assert');
 const request = require('supertest');
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 const { app, db, waitForDb, cleanupTestDb } = require('./helpers');
+
+const cookieOf = response => response.headers['set-cookie'][0].split(';')[0];
+const refresh = cookie => request(app).post('/api/auth/refresh').set('Cookie', cookie).set('X-Portal-CSRF', '1');
+async function sessionUser(label) {
+  const response = await request(app).post('/api/auth/register').send({ ...testUser, email: `${label}@test.com` });
+  assert.equal(response.status, 201, response.body.error);
+  return response;
+}
 
 let programId;
 
@@ -192,4 +202,106 @@ test('change-password: valid change succeeds, new password works', async () => {
     .post('/api/auth/login')
     .send({ email: testUser.email, password: 'newsecret123' });
   assert.strictEqual(newLogin.status, 200);
+});
+
+test('sessions: cookie is HttpOnly, token is short lived and only refresh hashes are stored', async () => {
+  const response = await sessionUser('session-cookie');
+  const cookie = response.headers['set-cookie'][0];
+  assert.match(cookie, /HttpOnly/);
+  assert.match(cookie, /SameSite=Strict/);
+  assert.match(cookie, /Path=\/api\/auth/);
+  assert.equal(response.headers['cache-control'], 'no-store');
+  const claims = jwt.decode(response.body.token);
+  assert.equal(claims.exp - claims.iat, 900);
+  assert.ok(claims.sid);
+  const raw = cookieOf(response).split('=')[1];
+  const row = await db.prepare('SELECT * FROM auth_sessions WHERE id = ?').get(claims.sid);
+  assert.notEqual(row.current_hash, raw);
+  assert.equal(row.current_hash, crypto.createHash('sha256').update(raw).digest('hex'));
+});
+
+test('sessions: rotation replaces cookie and replay revokes the whole session', async () => {
+  const login = await sessionUser('rotation');
+  const rotated = await refresh(cookieOf(login));
+  assert.equal(rotated.status, 200);
+  assert.notEqual(cookieOf(rotated), cookieOf(login));
+  assert.equal((await request(app).get('/api/auth/me').set('Authorization', `Bearer ${rotated.body.token}`)).status, 200);
+  assert.equal((await refresh(cookieOf(login))).status, 401);
+  assert.equal((await refresh(cookieOf(rotated))).status, 401);
+  assert.equal((await request(app).get('/api/auth/me').set('Authorization', `Bearer ${rotated.body.token}`)).status, 401);
+});
+
+test('sessions: concurrent reuse cannot create two live successor sessions', async () => {
+  const login = await sessionUser('parallel-rotation');
+  const results = await Promise.all([refresh(cookieOf(login)), refresh(cookieOf(login))]);
+  assert.equal(results.filter(r => r.status === 200).length, 1);
+  assert.equal(results.filter(r => r.status === 401).length, 1);
+  const winner = results.find(r => r.status === 200);
+  assert.equal((await refresh(cookieOf(winner))).status, 401);
+});
+
+test('sessions: refresh requires CSRF header and rejects hostile origins', async () => {
+  const login = await sessionUser('csrf');
+  assert.equal((await request(app).post('/api/auth/refresh').set('Cookie', cookieOf(login))).status, 403);
+  assert.equal((await refresh(cookieOf(login)).set('Origin', 'https://attacker.example')).status, 403);
+  assert.equal((await refresh(cookieOf(login))).status, 200);
+});
+
+test('sessions: logout revokes access and refresh tokens', async () => {
+  const login = await sessionUser('logout');
+  const result = await request(app).post('/api/auth/logout').set('Cookie', cookieOf(login)).set('X-Portal-CSRF', '1');
+  assert.equal(result.status, 200);
+  assert.match(result.headers['set-cookie'][0], /Expires=Thu, 01 Jan 1970/);
+  assert.equal((await refresh(cookieOf(login))).status, 401);
+  assert.equal((await request(app).get('/api/auth/me').set('Authorization', `Bearer ${login.body.token}`)).status, 401);
+});
+
+test('sessions: password change revokes every device', async () => {
+  const first = await sessionUser('password-revoke');
+  const second = await request(app).post('/api/auth/login').send({email:'password-revoke@test.com', password:testUser.password});
+  const changed = await request(app).put('/api/auth/change-password').set('Authorization', `Bearer ${first.body.token}`)
+    .send({current_password:testUser.password, new_password:'new-secret-789'});
+  assert.equal(changed.status,200);
+  for (const device of [first,second]) {
+    assert.equal((await refresh(cookieOf(device))).status,401);
+    assert.equal((await request(app).get('/api/auth/me').set('Authorization', `Bearer ${device.body.token}`)).status,401);
+  }
+});
+
+test('login: old failures expire, success resets failures and blocked retries do not extend lockout', async () => {
+  await sessionUser('lockout');
+  const email = 'lockout@test.com';
+  const old = new Date(Date.now()-3600000).toISOString().slice(0,19).replace('T',' ');
+  for (let i=0;i<6;i++) await db.prepare('INSERT INTO login_attempts (id,email,success,created_at) VALUES (?,?,0,?)').run(crypto.randomUUID(),email,old);
+  const login = password => request(app).post('/api/auth/login').send({email,password});
+  assert.equal((await login(testUser.password)).status,200);
+  for(let i=0;i<4;i++) assert.equal((await login('wrong-password')).status,401);
+  assert.equal((await login(testUser.password)).status,200);
+  assert.equal((await db.prepare('SELECT COUNT(*) AS c FROM login_attempts WHERE email=? AND success=0').get(email)).c,0);
+  for(let i=0;i<5;i++) assert.equal((await login('wrong-password')).status,401);
+  const blocked = await login(testUser.password);
+  assert.equal(blocked.status,429);
+  assert.ok(Number(blocked.headers['retry-after'])>0);
+  assert.ok(blocked.body.retryAfter<=900);
+  await login(testUser.password);
+  assert.equal((await db.prepare('SELECT COUNT(*) AS c FROM login_attempts WHERE email=? AND success=0').get(email)).c,5);
+  await db.prepare('UPDATE login_attempts SET created_at=? WHERE email=? AND success=0').run(old,email);
+  assert.equal((await login(testUser.password)).status,200);
+});
+
+test('sessions: expired sessions and legacy access tokens are rejected', async () => {
+  const login = await sessionUser('expired-session');
+  const claims = jwt.decode(login.body.token);
+  await db.prepare('UPDATE auth_sessions SET expires_at=? WHERE id=?').run(Date.now()-1,claims.sid);
+  assert.equal((await refresh(cookieOf(login))).status,401);
+  const legacy = jwt.sign({id:claims.id,role:'student'},process.env.JWT_SECRET,{expiresIn:'24h'});
+  assert.equal((await request(app).get('/api/auth/me').set('Authorization',`Bearer ${legacy}`)).status,401);
+});
+
+test('rate limits: successful login does not consume failed-login allowance', async () => {
+  await sessionUser('successful-logins');
+  for (let i = 0; i < 22; i++) {
+    const response = await request(app).post('/api/auth/login').send({email:'successful-logins@test.com',password:testUser.password});
+    assert.equal(response.status,200);
+  }
 });

@@ -14,6 +14,7 @@ datasource db {
 }
 
 model User {
+  authSessions         AuthSession[]
   id                   String                @id @default(uuid())
   name                 String
   email                String                @unique
@@ -58,6 +59,26 @@ model User {
   assignedClasses        ProgramClass[]        @relation("ClassInstructor")
 
   @@map("users")
+}
+
+model AuthSession {
+  id           String @id
+  user_id      String
+  current_hash String
+  expires_at   BigInt
+  revoked      Int @default(0)
+  user         User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  tokens       RefreshToken[]
+  @@index([user_id])
+  @@map("auth_sessions")
+}
+
+model RefreshToken {
+  token_hash String @id
+  session_id String
+  session    AuthSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  @@index([session_id])
+  @@map("refresh_tokens")
 }
 
 model Assignment {

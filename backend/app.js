@@ -57,6 +57,12 @@ const certificateRoutes = require("./routes/certificates");
 const fileRoutes = require("./routes/files");
 
 const app = express();
+// Trust only the configured number of ingress hops, never arbitrary forwarded
+// headers. Render normally needs one; verify this if the hosting path changes.
+const proxyHops = Number(process.env.TRUST_PROXY_HOPS || (process.env.RENDER ? 1 : 0));
+if (!Number.isInteger(proxyHops) || proxyHops < 0 || proxyHops > 5) throw new Error('Invalid TRUST_PROXY_HOPS');
+app.set('trust proxy', proxyHops);
+const limits = require('./lib/rateLimits');
 
 /* ------------------------------------------------------------------ */
 /*  1. Security middleware (applied first, in order)                  */
@@ -80,37 +86,28 @@ app.use(
       return cb(new Error("Not allowed by CORS"));
     },
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization", "x-socket-id"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-socket-id", "X-Portal-CSRF"],
+    exposedHeaders: ["Retry-After"],
     credentials: true,
   }),
 );
 
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: "Too many auth attempts. Try again later." },
-});
-app.use("/api/auth/register", authLimiter);
-app.use("/api/auth/login", authLimiter);
-app.use("/api/auth/forgot-password", authLimiter);
-app.use("/api/auth/reset-password", authLimiter);
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use(requestLogger);
+app.use('/api/auth', limits.authBurst());
+app.use('/api/auth/login', limits.login());
+app.use('/api/auth/register', limits.register());
+app.use('/api/auth/forgot-password', limits.forgot());
+app.use('/api/auth/reset-password', limits.reset());
+app.use('/api/auth/refresh', limits.refresh());
 app.use(
   "/api/chatbot",
-  rateLimit({
-    windowMs: 60 * 1000,
-    max: 20,
-    message: { error: "Too many chatbot requests" },
-  }),
+  limits.scoped(20),
 );
 app.use(
   "/api/admin/contacts",
-  rateLimit({
-    windowMs: 60 * 1000,
-    max: 10,
-    message: { error: "Too many requests" },
-  }),
+  limits.scoped(10),
 );
 app.use(
   "/api/certificates/verify",
@@ -124,29 +121,11 @@ app.use(
 );
 app.use(
   "/api/files",
-  rateLimit({
-    windowMs: 60 * 1000,
-    max: 60,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: { error: "Too many file requests" },
-  }),
+  limits.scoped(60),
 );
 
-app.use(
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 200,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: { error: "Too many requests. Please try again later." },
-  }),
-);
-
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
-
-app.use(requestLogger);
+// Static assets and health probes must not spend the dashboard API allowance.
+app.use('/api', limits.general());
 
 /* ------------------------------------------------------------------ */
 /*  2. API routes                                                     */

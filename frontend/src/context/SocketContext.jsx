@@ -1,16 +1,16 @@
 import { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { io } from 'socket.io-client';
 import { useAuth } from './AuthContext';
+import { refreshSession } from '../api/session';
 
 const SocketContext = createContext(null);
 
 export function SocketProvider({ children }) {
-  const { user } = useAuth();
+  const { user, accessToken: token } = useAuth();
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [typingUsers, setTypingUsers] = useState({});
   const socketRef = useRef(null);
-  const token = localStorage.getItem('token');
 
   useEffect(() => {
     if (!user || !token) {
@@ -32,13 +32,18 @@ export function SocketProvider({ children }) {
       setTypingUsers(prev => ({ ...prev, [data.user_id]: data }));
       setTimeout(() => setTypingUsers(prev => { const n = { ...prev }; delete n[data.user_id]; return n; }), 3000);
     });
-    s.on('disconnect', () => {});
+    s.on('disconnect', reason => {
+      if (reason === 'io server disconnect') refreshSession().catch(() => {});
+    });
+    s.on('connect_error', error => {
+      if (error.message === 'Invalid token') refreshSession().catch(() => {});
+    });
 
     socketRef.current = s;
     setSocket(s);
 
     return () => { s.disconnect(); };
-  }, [user?.id]);
+  }, [user?.id, token]);
 
   const value = { socket, onlineUsers, typingUsers, isOnline: (userId) => onlineUsers.some(u => u.id === userId) };
   return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;

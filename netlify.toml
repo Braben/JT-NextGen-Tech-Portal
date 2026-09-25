@@ -6,6 +6,8 @@
 # Public service addresses only. Database credentials and JWT secrets stay on Render.
 [build.environment]
   VITE_API_URL = "https://jt-nextgen-tech-portal.onrender.com/api"
+  # Only authentication is proxied: its host-only refresh cookie belongs to
+  # the frontend origin. Other APIs and WebSockets continue going to Render.
   VITE_SOCKET_URL = "https://jt-nextgen-tech-portal.onrender.com"
 
 [[headers]]

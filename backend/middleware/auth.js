@@ -16,7 +16,7 @@
  *     information leakage to attackers).
  */
 
-const jwt = require('jsonwebtoken');
+const { decodeAccess, activeSession } = require('../lib/sessions');
 const db = require('../config/db');
 
 /**
@@ -39,12 +39,13 @@ async function authenticate(req, res, next) {
   let decoded;
   try {
     const token = header.split(' ')[1];
-    decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
+    decoded = decodeAccess(token);
   } catch (err) {
     return res.status(401).json({ error: 'Invalid or expired token' });
   }
 
   try {
+    if (!await activeSession(decoded)) return res.status(401).json({ error: 'Session expired. Please sign in again.' });
     const user = await db.prepare('SELECT id, name, email, role FROM users WHERE id = ?').get(decoded.id);
     if (!user) return res.status(401).json({ error: 'Invalid or expired token' });
     req.user = user;

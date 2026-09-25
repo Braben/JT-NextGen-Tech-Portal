@@ -5,7 +5,7 @@
 
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const sessions = require('../lib/sessions');
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 const db = require('../config/db');
@@ -16,6 +16,25 @@ const { normalizeEmail, trimString } = require('../lib/validators');
 const logger = require('../lib/logger');
 
 const router = express.Router();
+// Auth responses contain credentials or account data and must not be cached by
+// the same-origin Netlify proxy. Cookie mutations require our CSRF header.
+router.use((req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });
+router.use((req, res, next) => {
+  // Prevent login-CSRF as well as refresh-CSRF. Browser credential submissions
+  // carry Origin and our custom header; non-browser API clients have no Origin.
+  if (req.method === 'POST' && ['/login', '/register'].includes(req.path) && req.get('origin')) {
+    return sessions.protectCookieRequest(req, res, next);
+  }
+  next();
+});
+router.post('/refresh', sessions.protectCookieRequest, async (req, res, next) => {
+  try { res.json(await sessions.rotate(req, res)); }
+  catch (error) { if (error.status === 401) sessions.clearCookie(res); next(error); }
+});
+router.post('/logout', sessions.protectCookieRequest, async (req, res, next) => {
+  try { await sessions.logout(req, res); res.json({ message: 'Signed out' }); }
+  catch (error) { next(error); }
+});
 
 function normalizeRegistrationProfile(raw = {}) {
   return {
@@ -116,14 +135,7 @@ router.post('/register', validate(schemas.register), async (req, res, next) => {
     await db.saveDb?.();
     invalidate('/api/admin/stats');
 
-    // Sign JWT with minimal payload  -  24-hour window limits misuse of stolen tokens
-    const token = jwt.sign(
-      { id, name, email, role: userRole },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-
-    res.status(201).json({ token, user: { id, name, email, role: userRole } });
+    res.status(201).json(await sessions.issueSession({ id, name, email, role: userRole }, res));
   } catch (err) {
     next(err);
   }
@@ -136,16 +148,20 @@ router.post('/login', validate(schemas.login), async (req, res, next) => {
     const email = normalizeEmail(req.body.email);
     const ip = req.ip || '';
 
-    // Brute-force lockout: reject if >4 failed attempts in the last 15 min.
-    const cutoff = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+    // Compare timestamps in the database's own type. SQLite's CAST AS timestamp
+    // converts dates to numbers and can accidentally count very old failures.
+    const cutoff = new Date(Date.now() - 15 * 60 * 1000);
+    const boundary = db.type === 'sqlite' ? cutoff.toISOString().slice(0,19).replace('T',' ') : cutoff.toISOString();
     const recentFails = await db.prepare(
-      'SELECT COUNT(*) AS c FROM login_attempts WHERE email = ? AND success = 0 AND created_at > CAST(? AS timestamp)'
-    ).get(email, cutoff);
-    if (Number(recentFails?.c || 0) >= 5) {
-      await db.prepare('INSERT INTO login_attempts (id, email, ip, success) VALUES (?,?,?,?)')
-        .run(uuidv4(), email, ip, 0);
-      await db.saveDb();
-      return res.status(429).json({ error: 'Too many failed attempts. Try again in 15 minutes.' });
+      'SELECT created_at FROM login_attempts WHERE email = ? AND success = 0 AND created_at > ? ORDER BY created_at DESC LIMIT 5'
+    ).all(email, boundary);
+    if (recentFails.length >= 5) {
+      const oldest = recentFails[4].created_at;
+      const stamp = oldest instanceof Date ? oldest.getTime() : Date.parse(String(oldest).replace(' ', 'T') + (String(oldest).endsWith('Z') ? '' : 'Z'));
+      const retryAfter = Math.max(1, Math.ceil((stamp + 15 * 60 * 1000 - Date.now()) / 1000));
+      // Rejected retries are not password failures: do not extend the window.
+      res.set('Retry-After', String(retryAfter));
+      return res.status(429).json({ error: `Too many failed attempts. Try again in ${Math.ceil(retryAfter / 60)} minute(s).`, retryAfter });
     }
 
     const user = await db.prepare('SELECT * FROM users WHERE email = ?').get(email);
@@ -160,23 +176,12 @@ router.post('/login', validate(schemas.login), async (req, res, next) => {
     }
 
     // Successful login — clear lockout history
+    await db.prepare('DELETE FROM login_attempts WHERE email = ? AND success = 0').run(email);
     await db.prepare('INSERT INTO login_attempts (id, email, ip, success) VALUES (?,?,?,?)')
       .run(uuidv4(), email, ip, 1);
     await db.saveDb();
 
-    const token = jwt.sign(
-      { id: user.id, name: user.name, email: user.email, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-
-    res.json({
-      token,
-      user: {
-        id: user.id, name: user.name, email: user.email,
-        role: user.role, avatar: user.avatar,
-      },
-    });
+    res.json(await sessions.issueSession(user, res));
   } catch (err) {
     next(err);
   }
@@ -225,6 +230,8 @@ router.post('/reset-password', async (req, res, next) => {
     if (new Date(row.expires_at) < new Date()) return res.status(400).json({ error: 'Token expired' });
     const hashed = await bcrypt.hash(newPass, 10);
     await db.prepare('UPDATE users SET password = ? WHERE id = ?').run(hashed, row.user_id);
+    await sessions.revokeUser(row.user_id);
+    await db.prepare('DELETE FROM login_attempts WHERE email = (SELECT email FROM users WHERE id = ?) AND success = 0').run(row.user_id);
     await db.prepare('UPDATE password_resets SET used = 1 WHERE id = ?').run(row.id);
     await db.prepare('DELETE FROM password_resets WHERE user_id = ? AND used = 1 AND id != ?').run(row.user_id, row.id);
     await db.saveDb?.();
@@ -275,9 +282,9 @@ router.put('/change-password', authenticate, async (req, res, next) => {
     await db.prepare('UPDATE users SET password = ? WHERE id = ?').run(hashed, req.user.id);
     await db.saveDb();
 
-    // NOTE: Existing JWTs remain valid until expiry (24h from issue).
-    // A future enhancement could maintain a token-blacklist table
-    // to force logout all other sessions after a password change.
+    // Revoke all devices, including the current session, after a password change.
+    await sessions.revokeUser(req.user.id);
+    sessions.clearCookie(res);
 
     res.json({ message: 'Password changed successfully' });
   } catch (err) {

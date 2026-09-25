@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { validateApiResponse } from './responseValidation';
+import { getAccessToken, refreshSession, startSession, clearSession } from './session';
 
 // API base URL.
 // Default '/api' — same-origin (backend serves the built frontend in production,
@@ -20,34 +21,39 @@ export const systemAPI = {
 };
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = getAccessToken();
+  // Route cookie-bearing auth requests through the same-origin proxy, even
+  // when the ordinary API base is the separate Render host.
+  if (config.url?.startsWith('/auth/')) config.baseURL = '/api';
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
 api.interceptors.response.use(
   validateApiResponse,
-  (err) => {
-    const authFormPath = ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password'];
+  async (err) => {
+    const authFormPath = ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password', '/auth/change-password'];
     const isAuthFormRequest = authFormPath.some((path) => err.config?.url?.startsWith(path));
 
     // Only protected-session failures should log the user out. Public auth
     // form failures must stay on the form so validation messages remain usable.
-    if (err.response?.status === 401 && !isAuthFormRequest && localStorage.getItem('token')) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      if (window.location.pathname !== '/login') window.location.href = '/login';
+    if (err.response?.status === 401 && !isAuthFormRequest && !err.config?._sessionRetry && getAccessToken()) {
+      err.config._sessionRetry = true;
+      // Another failed request may already have refreshed this token.
+      if (err.config.headers.Authorization === `Bearer ${getAccessToken()}`) await refreshSession();
+      err.config.headers.Authorization = `Bearer ${getAccessToken()}`;
+      return api(err.config);
     }
     return Promise.reject(err);
   }
 );
 
 export const authAPI = {
-  login: (data) => api.post('/auth/login', data),
-  register: (data) => api.post('/auth/register', data, { timeout: 60000 }),
+  login: (data) => startSession('/login', data),
+  register: (data) => startSession('/register', data, { timeout: 60000 }),
   me: () => api.get('/auth/me'),
   updateProfile: (data) => api.put('/auth/profile', data),
-  changePassword: (data) => api.put('/auth/change-password', data),
+  changePassword: (data) => api.put('/auth/change-password', data).then(response => { clearSession(); return response; }),
   forgotPassword: (data) => api.post('/auth/forgot-password', data),
   resetPassword: (data) => api.post('/auth/reset-password', data),
 };

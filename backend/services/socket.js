@@ -1,5 +1,5 @@
 const { Server } = require('socket.io');
-const jwt = require('jsonwebtoken');
+const { decodeAccess, activeSession } = require('../lib/sessions');
 const db = require('../config/db');
 
 const onlineUsers = new Map();
@@ -32,7 +32,10 @@ function initSocket(httpServer) {
     const token = socket.handshake.auth?.token || socket.handshake.query?.token;
     if (!token) return next(new Error('No token'));
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
+      const decoded = decodeAccess(token);
+      if (!await activeSession(decoded)) return next(new Error('Invalid token'));
+      socket.sessionId = decoded.sid;
+      socket.tokenExpiresAt = decoded.exp * 1000;
       // Roles can change during a token's lifetime. Resolve the current user
       // before joining privileged rooms; existing sockets need separate eviction.
       const user = await db.prepare('SELECT id, name, role FROM users WHERE id = ?').get(decoded.id);
@@ -45,6 +48,9 @@ function initSocket(httpServer) {
   _io.on('connection', (socket) => {
     const userId = socket.user.id;
     socket.join(`user:${userId}`);
+    socket.join(`session:${socket.sessionId}`);
+    // Force reauthentication when the access token expires, even on an idle socket.
+    const expiryTimer = setTimeout(() => socket.disconnect(true), Math.max(0, socket.tokenExpiresAt - Date.now()));
     if (socket.user.role === 'admin') socket.join('admins');
     onlineUsers.set(userId, { id: userId, name: socket.user.name, role: socket.user.role, socketId: socket.id });
     _io.emit('users:online', Array.from(onlineUsers.keys()).map((id) => ({ id })));
@@ -66,6 +72,7 @@ function initSocket(httpServer) {
     });
 
     socket.on('disconnect', () => {
+      clearTimeout(expiryTimer);
       onlineUsers.delete(userId);
       _io.emit('users:online', Array.from(onlineUsers.keys()).map((id) => ({ id })));
       _io.to('admins').emit('users:online:admin', Array.from(onlineUsers.values()));
